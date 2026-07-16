@@ -1,0 +1,25 @@
+{
+  "name": "kyutodaze.com",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build && npm run pages:entries",
+    "pages:entries": "node scripts/create-pages-route-entries.js",
+    "preview": "vite preview --host 127.0.0.1",
+    "media:previews": "node scripts/generate-media-previews.js",
+    "media:previews:check": "node scripts/generate-media-previews.js --check",
+    "openworks:xlsx": "python3 scripts/sync-open-works-workbook.py --from-csv",
+    "openworks:csv": "python3 scripts/sync-open-works-workbook.py --to-csv",
+    "openworks:check": "python3 scripts/sync-open-works-workbook.py --check",
+    "works:xlsx": "python3 scripts/sync-open-works-workbook.py --dataset works --from-csv",
+    "works:csv": "python3 scripts/sync-open-works-workbook.py --dataset works --to-csv",
+    "works:check": "python3 scripts/sync-open-works-workbook.py --dataset works --check",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3",
+    "vite": "^7.0.0"
+  }
+}

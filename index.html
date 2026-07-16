@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KYUTO.MATTE</title>
+    <meta name="description" content="KYUTO.MATTE" />
+    <link rel="icon" href="%BASE_URL%assets/favicon.ico" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <main class="route-page new-home-page" id="home" data-route="home" data-work-view="summary">
+      <span id="top" aria-hidden="true"></span>
+      <div class="home-shell">
+        <section class="home-feed-panel" id="feed" aria-label="Works">
+          <header class="panel-bar feed-bar">
+            <div class="work-view-switch" role="group" aria-label="Work view">
+              <button class="work-view-button" type="button" data-view-toggle="summary" aria-pressed="true">
+                <span class="work-view-icon work-view-icon-list" aria-hidden="true"></span>
+                <span>Summary</span>
+              </button>
+              <button class="work-view-button" type="button" data-view-toggle="overview" aria-pressed="false">
+                <span class="work-view-icon work-view-icon-grid" aria-hidden="true"></span>
+                <span>Overview</span>
+              </button>
+            </div>
+            <div class="category-filter" role="group" aria-label="Category filter">
+              <button class="category-filter-button" type="button" data-category-filter="mv" aria-pressed="false">M/V</button>
+              <button class="category-filter-button" type="button" data-category-filter="album" aria-pressed="false">Album</button>
+              <button class="category-filter-button" type="button" data-category-filter="graphic" aria-pressed="false">Graphic</button>
+              <button class="category-filter-button" type="button" data-category-filter="fashion" aria-pressed="false">Fashion</button>
+              <button class="category-filter-button" type="button" data-category-filter="ai3d" aria-pressed="false">AI/3D</button>
+            </div>
+          </header>
+
+          <div class="works-list" data-works-list aria-live="polite">
+            <p class="loading-copy">Loading works...</p>
+          </div>
+        </section>
+
+        <aside class="home-info-panel" id="information" aria-label="Information">
+          <header class="panel-bar info-bar">
+            <button class="logo-mark" type="button" data-home-reset aria-label="Reset home view">
+              <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+            </button>
+            <a class="top-link" href="#top" data-scroll-top>Top</a>
+          </header>
+
+          <section class="info-section" id="overview" aria-label="Overview">
+            <h1>KYUTO.MATTE</h1>
+            <div class="home-copy-block">
+              <p class="info-lede">
+                Kyuto is a Seoul-based visual creative working across artist visuals, 3D,
+                AI-generated imagery, moving image, and experimental visual direction.
+              </p>
+              <p class="info-detail">
+                서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.
+                3D, AI 이미지·영상, 모션 그래픽, 실험적인 비주얼 디렉션을 중심으로
+                감각적인 이미지를 설계하고 확장합니다.
+              </p>
+            </div>
+            <div class="contact-card" aria-label="Contact">
+              <p>Contact</p>
+              <span class="contact-link contact-link-static" aria-label="Email address">gray.ojat@gmail.com</span>
+              <a class="contact-link" href="https://www.instagram.com/kyuto.matte" target="_blank" rel="noreferrer">@kyuto.matte</a>
+            </div>
+          </section>
+
+          <section class="open-works" aria-label="Open works">
+            <h2><a class="open-works-heading-link" href="%BASE_URL%open-works">Open works</a></h2>
+            <div class="open-works-list" data-open-works-list aria-live="polite">
+              <p class="loading-copy">Loading open works...</p>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <main class="route-page bead-curtain-page" id="bead-curtain" data-route="bead-curtain" hidden>
+      <canvas class="bead-curtain-canvas" data-bead-curtain-webgl aria-label="Full-page interactive bead curtain"></canvas>
+      <div class="bead-cursor" data-bead-cursor aria-hidden="true"></div>
+    </main>
+
+    <main class="route-page open-work-page" id="open-work" data-route="open-work" data-open-work-page hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+          <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Open work navigation">
+          <a href="%BASE_URL%home">Home</a>
+          <a href="%BASE_URL%open-works">Open works</a>
+          <a href="#top" data-scroll-top>Top</a>
+        </nav>
+      </header>
+
+      <article class="open-work-detail">
+        <section class="open-work-hero" aria-labelledby="open-work-title">
+          <figure class="open-work-media" data-open-work-media hidden>
+            <img data-open-work-image alt="" />
+          </figure>
+          <p class="open-work-kicker" data-open-work-kicker>Open work</p>
+          <h1 id="open-work-title" data-open-work-title>Open work</h1>
+          <p class="open-work-summary" data-open-work-summary></p>
+          <div class="open-work-actions">
+            <a class="open-work-primary-action" href="%BASE_URL%feedback" data-open-work-action>피드백 작성하기</a>
+            <a class="open-work-secondary-action" href="%BASE_URL%open-works">목록으로</a>
+          </div>
+          <div class="open-work-external-links" data-open-work-external-links hidden></div>
+        </section>
+
+        <section class="open-work-brief" aria-label="Project brief">
+          <div>
+            <span>Format</span>
+            <strong data-open-work-format></strong>
+          </div>
+          <div>
+            <span>Status</span>
+            <strong data-open-work-status></strong>
+          </div>
+          <div>
+            <span>Role</span>
+            <strong data-open-work-role></strong>
+          </div>
+        </section>
+
+        <section class="open-work-body" aria-label="Open work details">
+          <div class="open-work-copy">
+            <p data-open-work-lede></p>
+            <p data-open-work-detail></p>
+          </div>
+          <div class="open-work-feature-grid" data-open-work-features></div>
+        </section>
+
+        <section class="open-work-example" data-open-work-example aria-label="Open work example" hidden>
+          <div class="open-work-example-heading">
+            <span data-open-work-example-kicker>Example</span>
+            <h2 data-open-work-example-title>Example</h2>
+          </div>
+          <div class="open-work-example-media" data-open-work-example-media></div>
+        </section>
+
+        <section class="open-work-manual" data-open-work-manual aria-label="Open work manual" hidden>
+          <div class="open-work-manual-heading">
+            <span>Manual</span>
+            <h2 data-open-work-manual-title>사용 설명서</h2>
+          </div>
+          <div class="open-work-manual-steps" data-open-work-manual-steps></div>
+        </section>
+
+        <section class="open-work-related" aria-label="Related open works">
+          <h2>More open works</h2>
+          <div class="open-work-related-list" data-open-work-related></div>
+        </section>
+      </article>
+    </main>
+
+    <main class="route-page splatify-webapp-page" id="splatify-webapp" data-route="splatify-webapp" hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+          <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Splatify web app navigation">
+          <a href="%BASE_URL%splatify">Splatify</a>
+          <a href="%BASE_URL%open-works">Open works</a>
+          <a href="#top" data-scroll-top>Top</a>
+        </nav>
+      </header>
+      <article class="splatify-webapp-shell">
+        <section class="splatify-webapp-hero" aria-labelledby="splatify-webapp-title">
+          <p class="open-work-kicker">Splatify</p>
+          <h1 id="splatify-webapp-title">SPLATIFY WEB APP</h1>
+        </section>
+        <section class="splatify-webapp-frame" aria-label="Splatify web app">
+          <iframe data-splatify-webapp-frame title="SPLATIFY web app" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+        </section>
+      </article>
+    </main>
+
+    <main class="route-page splatify-webapp-page" id="splatify-webapp-export" data-route="splatify-webapp-export" hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+          <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Splatify export navigation">
+          <a href="%BASE_URL%splatify-webapp">Web app</a>
+          <a href="%BASE_URL%splatify">Splatify</a>
+          <a href="#top" data-scroll-top>Top</a>
+        </nav>
+      </header>
+      <article class="splatify-webapp-shell">
+        <section class="splatify-webapp-hero" aria-labelledby="splatify-export-title">
+          <p class="open-work-kicker">Splatify</p>
+          <h1 id="splatify-export-title">SPLATIFY EXPORT</h1>
+        </section>
+        <section class="splatify-webapp-frame" aria-label="Splatify export">
+          <iframe data-splatify-export-frame title="SPLATIFY export" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+        </section>
+      </article>
+    </main>
+
+    <main class="route-page open-works-index-page" id="open-works" data-route="open-works" hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+          <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Open works navigation">
+          <a href="%BASE_URL%home">Home</a>
+          <a href="%BASE_URL%open-works">Open works</a>
+          <a href="#top" data-scroll-top>Top</a>
+        </nav>
+      </header>
+
+      <article class="open-works-index-content">
+        <section class="open-works-index-hero" aria-labelledby="open-works-index-title">
+          <h1 id="open-works-index-title" data-open-works-page-title>Open Works</h1>
+          <p data-open-works-page-summary>다양한 작업들의 아카이빙 및 실험실 공간입니다.</p>
+        </section>
+        <section class="open-works-index-list" aria-label="Open works list" data-open-works-index-list></section>
+      </article>
+    </main>
+
+    <main class="route-page feedback-page" id="feedback" data-route="feedback" hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+          <img class="kyuto-logo" src="%BASE_URL%assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Feedback navigation">
+          <a href="%BASE_URL%home">Home</a>
+          <a href="%BASE_URL%open-works">Open works</a>
+          <a href="#top" data-scroll-top>Top</a>
+        </nav>
+      </header>
+
+      <article class="feedback-content">
+        <section class="feedback-hero" aria-labelledby="feedback-title">
+          <p class="open-work-kicker">Feedback</p>
+          <h1 id="feedback-title">Feedback</h1>
+          <p data-feedback-intro>Open work에 대한 의견을 남겨주세요.</p>
+        </section>
+
+        <form class="feedback-form" data-feedback-form>
+          <label>
+            <span>Open work</span>
+            <select name="work" data-feedback-work-select></select>
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autocomplete="email" placeholder="your@email.com" />
+          </label>
+          <label>
+            <span>Feedback</span>
+            <textarea name="message" rows="8" placeholder="좋았던 점, 불편한 점, 필요한 기능을 적어주세요." required></textarea>
+          </label>
+          <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
+          <button class="feedback-submit" type="submit">SUBMIT</button>
+        </form>
+      </article>
+    </main>
+
+    <main class="route-page kyutomatte-page" id="kyutomatte" data-route="kyutomatte" aria-label="KYUTOMATTE">
+      <article class="portfolio-content">
+        <br />
+        <h1 class="click-anywhere">KYUTO MATTE</h1>
+
+        <section class="intro-copy bodycopy2" aria-label="Profile">
+          <p>
+            <b>
+              서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.<br />
+              3D, AI 이미지·영상, 모션 그래픽, 실험적인 비주얼 디렉션을 중심으로 감각적인 이미지를 설계하고 확장합니다.<br />
+              <br />
+              문의 및 협업 제안은 Instagram @kyuto.matte 또는 gray.ojat@gmail.com으로 연락 부탁드립니다.
+            </b>
+          </p>
+          <p>
+            <b>
+              Seoul-based visual creative working across artist visuals, 3D, AI-generated imagery, moving image, and experimental visual direction.<br />
+              I create atmospheric, image-driven works for music, fashion, brand, and digital contexts.<br />
+              <br />
+              For inquiries and collaborations, please contact me via Instagram @kyuto.matte or gray.ojat@gmail.com.
+            </b>
+          </p>
+        </section>
+
+        <hr />
+
+        <h2 class="click-anywhere">VISUAL WORKS</h2>
+
+        <section class="work-group visual-work-section" aria-labelledby="blackpink-title">
+          <h3 class="sub-titles" id="blackpink-title">📍for BLACKPINK</h3>
+          <div class="media-frame media-frame-youtube">
+            <iframe
+              src="https://www.youtube.com/embed/2GJfWMYCWY0"
+              title="BLACKPINK GO MV"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <p class="caption"><b>✤ Visual Creative for BLACKPINK - ‘GO’ MV</b></p>
+        </section>
+
+        <section class="work-group visual-work-section" aria-labelledby="babymonster-title">
+          <h3 class="sub-titles" id="babymonster-title">📍for BABYMONSTER</h3>
+          <div class="media-grid">
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/yd_uG3TtREs" title="BABYMONSTER PSYCHO MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for BABYMONSTER - ‘PSYCHO’ MV</b></figcaption>
+            </figure>
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/wlHwjkYpSr0" title="BABYMONSTER WE GO UP MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for BABYMONSTER - ‘WE GO UP’ MV</b></figcaption>
+            </figure>
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/xn8mQqz2xmM" title="BABYMONSTER HOT SAUCE MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for BABYMONSTER - ‘HOT SAUCE’ MV</b></figcaption>
+            </figure>
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/XShaIZs7J7M" title="BABYMONSTER Really Like You MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for BABYMONSTER - ‘Really Like You’ MV</b></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section class="work-group visual-work-section" aria-labelledby="enhypen-title">
+          <h3 class="sub-titles" id="enhypen-title">📍for ENHYPEN</h3>
+          <div class="media-grid">
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/yjxLMzeV76Q" title="ENHYPEN Brought The Heat Back MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for ENHYPEN - ‘Brought the Heat Back’ MV</b></figcaption>
+            </figure>
+            <figure class="media-card">
+              <iframe src="https://www.youtube.com/embed/FPDYeRk2PO8" title="ENHYPEN XO MV" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              <figcaption class="caption"><b>✤ Visual Creative for ENHYPEN - ‘XO’ MV</b></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <hr />
+
+        <h2 class="click-anywhere">AI WORKS</h2>
+
+        <section class="work-group ai-work-list" aria-label="AI works">
+          <figure class="media-card media-card-large">
+            <video src="https://freight.cargo.site/m/X2898146962606299286356594513940/KYUTO-OHIR_BF_0329low.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ Full AI commercial video for ‘OHIR’</b></figcaption>
+          </figure>
+          <figure class="media-card media-card-large">
+            <video src="https://freight.cargo.site/m/A2898135742503343661037790943252/POLICELINE_F_SNS.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ AI inpainting study - personal work</b></figcaption>
+          </figure>
+          <figure class="media-card media-card-large media-card-wide">
+            <video src="https://freight.cargo.site/m/W2887198084914248074220576167956/BANGBANG_F.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ AI inpainting study - personal work</b></figcaption>
+          </figure>
+          <a class="media-card media-card-large" href="https://www.youtube.com/shorts/pdVeiuAHC2A" target="_blank" rel="noreferrer">
+            <img src="https://i.ytimg.com/vi/pdVeiuAHC2A/hq2.jpg" alt="AI Commercial for Jadarm Chicken thumbnail" />
+            <span class="caption"><b>✤ AI Commercial for ‘자담치킨’</b></span>
+          </a>
+          <figure class="media-card media-card-wide">
+            <video src="https://freight.cargo.site/original/i/G2772420883633862555996944586772/LOW_Rabbit_resize02.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ Invitation Film #01 - Unmute recommanded</b></figcaption>
+          </figure>
+          <figure class="media-card media-card-wide">
+            <video src="https://freight.cargo.site/original/i/K2772420883615415811923235035156/LOW_feather_resize_01.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ Invitation Film #02 - Unmute recommanded</b></figcaption>
+          </figure>
+          <figure class="media-card media-card-wide">
+            <video src="https://freight.cargo.site/original/i/J2772420883596969067849525483540/LOW_butterfly_resize02.mp4" controls muted playsinline></video>
+            <figcaption class="caption"><b>✤ Invitation Film #03 - Unmute recommanded</b></figcaption>
+          </figure>
+        </section>
+      </article>
+    </main>
+
+    <main class="route-page cargo-page" id="cargo" data-route="cargo" aria-label="Cargo legacy clone">
+      <div class="video-backdrop" aria-hidden="true">
+        <video
+          class="background-video"
+          src="%BASE_URL%assets/butterfly_resize02.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+        ></video>
+      </div>
+
+      <header class="marquee-strip" aria-label="KYUTO MATTE marquee">
+        <div class="marquee-track">
+          <a class="marquee-text" href="%BASE_URL%home" aria-label="KYUTO MATTE home">
+            KYUTO MATTE 🁇 KYUTO MATTE 🁇&nbsp;
+          </a>
+          <a class="marquee-text" href="%BASE_URL%home" aria-hidden="true" tabindex="-1">
+            KYUTO MATTE 🁇 KYUTO MATTE 🁇&nbsp;
+          </a>
+        </div>
+      </header>
+
+      <section class="click-stage" aria-label="Home action">
+        <a class="button-14-copy" href="%BASE_URL%kyutomatte" aria-label="Click me">
+          <span class="button-line">
+            <span class="mouse-icon" aria-hidden="true"></span>
+            <span>CLICK</span>
+            <span class="mouse-icon" aria-hidden="true"></span>
+          </span>
+          <span class="button-line">
+            <span class="mouse-icon" aria-hidden="true"></span>
+            <span>ME</span>
+            <span class="mouse-icon" aria-hidden="true"></span>
+          </span>
+        </a>
+      </section>
+
+      <div class="site-border" aria-hidden="true"></div>
+    </main>
+
+    <div class="gallery-lightbox" data-gallery-lightbox hidden>
+      <button class="gallery-close" type="button" data-gallery-close aria-label="Close gallery">×</button>
+      <button class="gallery-nav gallery-prev" type="button" data-gallery-prev aria-label="Previous image">‹</button>
+      <figure class="gallery-stage">
+        <img data-gallery-image alt="" />
+        <video data-gallery-video controls muted playsinline preload="metadata" hidden></video>
+        <figcaption>
+          <span data-gallery-caption></span>
+          <small data-gallery-count></small>
+        </figcaption>
+      </figure>
+      <button class="gallery-nav gallery-next" type="button" data-gallery-next aria-label="Next image">›</button>
+    </div>
+  </body>
+</html>
