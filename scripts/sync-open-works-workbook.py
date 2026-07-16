@@ -49,7 +49,7 @@ WORKBOOKS = {
             SheetConfig(
                 "open-work-details",
                 ROOT / "public/data/open-work-details.csv",
-                "slug,kicker,detail_summary,format,status,role,lede,detail,features,action_label,image_url,image_alt",
+                "slug,kicker,detail_summary,format,status,role,lede,detail,features,action_label,image_url,image_alt,external_note",
             ),
             SheetConfig("open-works-page", ROOT / "public/data/open-works-page.csv", "title,summary"),
             SheetConfig("open-work-links", ROOT / "public/data/open-work-links.csv", "slug,label,url,sort"),

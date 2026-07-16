@@ -385,7 +385,8 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /extractEmbeddableUrl/);
   assert.doesNotMatch(js, /data-view-panel="feed"/);
   assert.match(js, /data-gallery-work-id/);
-  assert.match(js, /restoreSheetLeadingQuote/);
+  assert.match(js, /function restoreSheetLeadingQuote\(value\)/);
+  assert.match(js, /if \(\/\^\[‘’'“”\]\/\.test\(text\)\) return text;/);
   assert.match(js, /restoreSheetLeadingQuote\(work\.text\)/);
   assert.match(js, /function isAppRoutePath\(pathname\)/);
   assert.match(js, /!isAppRoutePath\(url\.pathname\)/);
@@ -920,6 +921,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorksWorkbookScript, /"public\/data\/works\.xlsx"/);
   assert.match(openWorksWorkbookScript, /"open-works"/);
   assert.match(openWorksWorkbookScript, /"open-work-details"/);
+  assert.match(openWorksWorkbookScript, /image_alt,external_note/);
   assert.match(openWorksWorkbookScript, /"open-works-page"/);
   assert.match(openWorksWorkbookScript, /"open-work-links"/);
   assert.match(openWorksWorkbookScript, /"open-work-examples"/);

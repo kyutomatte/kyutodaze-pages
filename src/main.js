@@ -51,7 +51,7 @@ function escapeHtml(value) {
 
 function restoreSheetLeadingQuote(value) {
   const text = String(value ?? "");
-  if (text.startsWith("'")) return text;
+  if (/^[‘’'“”]/.test(text)) return text;
   return /^[^']+'(?:\s|$)/.test(text) ? `'${text}` : text;
 }
 
