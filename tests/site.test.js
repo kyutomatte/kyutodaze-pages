@@ -1037,9 +1037,10 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-external-links/);
   assert.match(css, /\.open-work-external-link/);
   assert.match(css, /\.open-work-external-actions\s*\{[^}]*display:\s*grid;[^}]*gap:\s*0\.58rem;/s);
-  assert.match(css, /\.open-work-external-note\s*\{[^}]*display:\s*grid;[^}]*width:\s*fit-content;[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
+  assert.match(css, /\.open-work-external-note\s*\{[^}]*display:\s*flex;[^}]*width:\s*min\(100%,\s*64rem\);[^}]*align-items:\s*center;[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
   assert.match(css, /\.open-work-external-note::before\s*\{[^}]*content:\s*"PREVIEW ONLY";/s);
-  assert.match(css, /\.open-work-external-note span\s*\{[^}]*display:\s*block;[^}]*text-align:\s*left;/s);
+  assert.match(css, /\.open-work-external-note span\s*\{[^}]*min-width:\s*0;[^}]*white-space:\s*nowrap;/s);
+  assert.doesNotMatch(js, /text\.match\(/);
   assert.match(css, /\.open-work-feature-grid/);
   assert.match(css, /\.open-work-example/);
   assert.match(css, /\.open-work-example-media\s+video\s*\{[^}]*width:\s*100%;/s);

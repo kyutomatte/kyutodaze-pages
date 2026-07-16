@@ -194,13 +194,9 @@ function renderOpenWorkExternalNote(element, note) {
   element.hidden = !text;
   if (!text) return;
 
-  const lines = text.match(/[^.]+(?:\.|$)/g)?.map((line) => line.trim()).filter(Boolean) ?? [text];
-
-  for (const line of lines) {
-    const span = document.createElement("span");
-    span.textContent = line;
-    element.append(span);
-  }
+  const span = document.createElement("span");
+  span.textContent = text;
+  element.append(span);
 }
 
 function groupGalleryMedia(items) {
