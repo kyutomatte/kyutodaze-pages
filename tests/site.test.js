@@ -333,7 +333,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /fetchCsv\("\/data\/works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/work-media\.csv"\)/);
-  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-splatify-preview-copy"/);
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-splatify-note-ui"/);
   assert.match(js, /url\.searchParams\.set\("v", DATA_CACHE_VERSION\)/);
   assert.match(js, /parseCsv/);
   assert.match(js, /getYouTubeEmbedUrl/);
@@ -944,6 +944,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /data-open-work-title/);
   assert.match(html, /data-open-work-external-links/);
   assert.match(html, /data-open-work-external-note/);
+  assert.match(js, /function renderOpenWorkExternalNote/);
+  assert.match(js, /externalNote\.replaceChildren/);
   assert.match(html, /data-open-work-features/);
   assert.doesNotMatch(html, /data-open-work-embed/);
   assert.match(html, /data-open-work-example/);
@@ -1034,8 +1036,10 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-media/);
   assert.match(css, /\.open-work-external-links/);
   assert.match(css, /\.open-work-external-link/);
-  assert.match(css, /\.open-work-external-actions\s*\{[^}]*display:\s*grid;[^}]*gap:\s*0\.72rem;/s);
-  assert.match(css, /\.open-work-external-note\s*\{[^}]*border-top:\s*1px solid var\(--editorial-rule\);[^}]*overflow-wrap:\s*anywhere;[^}]*word-break:\s*normal;/s);
+  assert.match(css, /\.open-work-external-actions\s*\{[^}]*display:\s*grid;[^}]*gap:\s*0\.58rem;/s);
+  assert.match(css, /\.open-work-external-note\s*\{[^}]*display:\s*grid;[^}]*width:\s*fit-content;[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
+  assert.match(css, /\.open-work-external-note::before\s*\{[^}]*content:\s*"PREVIEW ONLY";/s);
+  assert.match(css, /\.open-work-external-note span\s*\{[^}]*display:\s*block;[^}]*text-align:\s*left;/s);
   assert.match(css, /\.open-work-feature-grid/);
   assert.match(css, /\.open-work-example/);
   assert.match(css, /\.open-work-example-media\s+video\s*\{[^}]*width:\s*100%;/s);

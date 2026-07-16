@@ -36,7 +36,7 @@ const OVERVIEW_MEDIA_LIMIT = 3;
 const BEAD_CURTAIN_HOME_DELAY_MS = 2950;
 const BEAD_CURSOR_CLICK_MS = 720;
 const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify-pre-release/";
-const DATA_CACHE_VERSION = "2026-07-17-splatify-preview-copy";
+const DATA_CACHE_VERSION = "2026-07-17-splatify-note-ui";
 const FEEDBACK_RECIPIENT = "gray.ojat@gmail.com";
 const FEEDBACK_ENDPOINT = (import.meta.env?.VITE_FEEDBACK_ENDPOINT ?? "").trim();
 
@@ -186,6 +186,21 @@ function getSafeOpenWorkExternalUrl(value) {
 
 function getExternalLinkAttributes(url) {
   return /^(https?:|mailto:)/i.test(url) ? ' target="_blank" rel="noreferrer"' : "";
+}
+
+function renderOpenWorkExternalNote(element, note) {
+  const text = note?.trim() ?? "";
+  element.replaceChildren();
+  element.hidden = !text;
+  if (!text) return;
+
+  const lines = text.match(/[^.]+(?:\.|$)/g)?.map((line) => line.trim()).filter(Boolean) ?? [text];
+
+  for (const line of lines) {
+    const span = document.createElement("span");
+    span.textContent = line;
+    element.append(span);
+  }
 }
 
 function groupGalleryMedia(items) {
@@ -1039,7 +1054,7 @@ function renderOpenWorkPage(slug) {
     if (externalLinks) externalLinks.innerHTML = "";
     if (externalNote) {
       externalNote.hidden = true;
-      externalNote.textContent = "";
+      externalNote.replaceChildren();
     }
     if (example && exampleMedia) {
       example.hidden = true;
@@ -1090,8 +1105,7 @@ function renderOpenWorkPage(slug) {
             return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
       })
       .join("");
-    externalNote.hidden = !work.externalNote;
-    externalNote.textContent = work.externalNote;
+    renderOpenWorkExternalNote(externalNote, work.externalNote);
   }
 
   if (media && image) {

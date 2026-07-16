@@ -1634,7 +1634,7 @@ body[data-page="bead-curtain"] {
 .open-work-external-actions {
   display: grid;
   width: min(100%, 64rem);
-  gap: 0.72rem;
+  gap: 0.58rem;
   margin-top: 0.1rem;
 }
 
@@ -1676,17 +1676,35 @@ body[data-page="bead-curtain"] {
 }
 
 .open-work-external-note {
-  width: 100%;
-  margin: 0;
-  border-top: 1px solid var(--editorial-rule);
-  padding-top: 0.72rem;
+  display: grid;
+  gap: 0.18rem;
+  width: fit-content;
+  max-width: min(100%, 44rem);
+  margin: 0.06rem 0 0;
+  border: 1px solid var(--editorial-rule);
+  background: rgba(45, 45, 45, 0.025);
+  padding: 0.62rem 0.78rem 0.68rem;
   color: rgba(45, 45, 45, 0.7);
-  font-size: 1.2rem;
+  font-size: 1.12rem;
   font-weight: 620;
-  letter-spacing: -0.015em;
-  line-height: 1.42;
-  overflow-wrap: anywhere;
-  word-break: normal;
+  letter-spacing: 0;
+  line-height: 1.36;
+  overflow-wrap: break-word;
+  word-break: keep-all;
+}
+
+.open-work-external-note::before {
+  content: "PREVIEW ONLY";
+  color: var(--editorial-red);
+  font-size: 0.76rem;
+  font-weight: 860;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+}
+
+.open-work-external-note span {
+  display: block;
+  text-align: left;
 }
 
 .open-work-brief {
