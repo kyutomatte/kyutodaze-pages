@@ -1631,11 +1631,18 @@ body[data-page="bead-curtain"] {
   background: var(--editorial-ink);
 }
 
+.open-work-external-actions {
+  margin-top: 0.1rem;
+}
+
+.open-work-external-actions[hidden] {
+  display: none;
+}
+
 .open-work-external-links {
   display: flex;
   flex-wrap: wrap;
   gap: 0.58rem;
-  margin-top: 0.1rem;
 }
 
 .open-work-external-links[hidden] {
@@ -1663,6 +1670,15 @@ body[data-page="bead-curtain"] {
 .open-work-external-link.is-disabled {
   color: rgba(45, 45, 45, 0.48);
   cursor: default;
+}
+
+.open-work-external-note {
+  max-width: 44rem;
+  margin: 0.72rem 0 0;
+  color: rgba(45, 45, 45, 0.68);
+  font-size: 1.14rem;
+  line-height: 1.45;
+  word-break: keep-all;
 }
 
 .open-work-brief {

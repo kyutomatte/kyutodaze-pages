@@ -821,6 +821,7 @@ function getOpenWorkDetails(openWorks, detailRows) {
         .map((feature) => feature.trim())
         .filter(Boolean),
       actionLabel: row.action_label?.trim() || "문의하기",
+      externalNote: row.external_note?.trim() ?? "",
       imageUrl: normalizeMediaUrl(row.image_url),
       imageAlt: row.image_alt?.trim() || detailsBySlug[slug]?.title || ""
     };
@@ -1002,7 +1003,9 @@ function renderOpenWorkPage(slug) {
   const media = document.querySelector("[data-open-work-media]");
   const image = document.querySelector("[data-open-work-image]");
   const related = document.querySelector("[data-open-work-related]");
+  const externalActions = document.querySelector("[data-open-work-external-actions]");
   const externalLinks = document.querySelector("[data-open-work-external-links]");
+  const externalNote = document.querySelector("[data-open-work-external-note]");
   const example = document.querySelector("[data-open-work-example]");
   const exampleKicker = document.querySelector("[data-open-work-example-kicker]");
   const exampleTitle = document.querySelector("[data-open-work-example-title]");
@@ -1032,9 +1035,11 @@ function renderOpenWorkPage(slug) {
     }
     if (page) page.classList.remove("has-open-work-media");
     if (features) features.innerHTML = "";
-    if (externalLinks) {
-      externalLinks.hidden = true;
-      externalLinks.innerHTML = "";
+    if (externalActions) externalActions.hidden = true;
+    if (externalLinks) externalLinks.innerHTML = "";
+    if (externalNote) {
+      externalNote.hidden = true;
+      externalNote.textContent = "";
     }
     if (example && exampleMedia) {
       example.hidden = true;
@@ -1069,8 +1074,9 @@ function renderOpenWorkPage(slug) {
 
   if (page) page.classList.toggle("has-open-work-media", Boolean(work.imageUrl));
 
-  if (externalLinks) {
+  if (externalActions && externalLinks && externalNote) {
     const links = openWorkExternalLinksBySlug[work.slug] ?? [];
+    externalActions.hidden = links.length === 0 && !work.externalNote;
     externalLinks.hidden = links.length === 0;
     externalLinks.innerHTML = links
       .map((link) => {
@@ -1084,6 +1090,8 @@ function renderOpenWorkPage(slug) {
             return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
       })
       .join("");
+    externalNote.hidden = !work.externalNote;
+    externalNote.textContent = work.externalNote;
   }
 
   if (media && image) {

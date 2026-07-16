@@ -1,7 +1,7 @@
 ﻿slug,label,url,sort
 sleepless,Github 페이지 연결,https://github.com/kyutomatte/sleepless/,1
 sleepless,MAC OS용 다운로드,/assets/downloads/sleepless/Sleepless_0.1.2_aarch64.dmg,2
-splatify,Web App 이용하기,/splatify-webapp,1
+splatify,Web App(beta) 이용하기,/splatify-webapp,1
 ffmochi,GitHub 페이지 연결,https://github.com/kyutomatte/ffMOCHI,1
 ffmochi,MAC OS용 다운로드,/assets/downloads/ffmochi/ffMOCHI-local.dmg,2
 jebi-agent,Github 페이지 연결,https://github.com/kyutomatte/jebi_agent,1

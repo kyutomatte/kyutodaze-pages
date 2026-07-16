@@ -849,6 +849,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkDetails, /SPLATIFY는 이미지와 영상을 가우시안 스타일의 포인트 비주얼로 변환하는 웹앱입니다/);
   assert.match(openWorkDetails, /JPG, PNG, MP4를 올려 브라우저에서 바로 프리뷰하고, 필요한 경우 MP4나 PNG로 출력하는 실험용 도구입니다/);
   assert.match(openWorkDetails, /이미지\/영상 업로드 기반 변환\|브라우저 WebGL 프리뷰\|MP4\/PNG 출력 흐름/);
+  assert.match(openWorkDetails, /현재는 브라우저에서 프리뷰를 확인할 수 있으며, 인코딩과 파일 렌더 기능은 준비 중입니다/);
   assert.doesNotMatch(openWorkDetails, /FastAPI 렌더 잡/);
   assert.match(openWorkDetails, /ffMOCHI는 macOS에서 영상 파일 용량을 가볍게 줄여주는 작은 앱입니다/);
   assert.match(openWorkDetails, /파일을 넣고 프리셋을 고르면 원본 옆에 압축된 MP4를 새로 만들어줍니다/);
@@ -869,7 +870,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkLinks, /^\uFEFF?slug,label,url,sort/m);
   assert.match(openWorkLinks, /sleepless,Github 페이지 연결,https:\/\/github\.com\/kyutomatte\/sleepless\/,1/);
   assert.match(openWorkLinks, /sleepless,MAC OS용 다운로드,\/assets\/downloads\/sleepless\/Sleepless_0\.1\.2_aarch64\.dmg,2/);
-  assert.match(openWorkLinks, /splatify,Web App 이용하기,\/splatify-webapp,1/);
+  assert.match(openWorkLinks, /splatify,Web App\(beta\) 이용하기,\/splatify-webapp,1/);
   assert.match(openWorkLinks, /ffmochi,GitHub 페이지 연결,https:\/\/github\.com\/kyutomatte\/ffMOCHI,1/);
   assert.match(openWorkLinks, /ffmochi,MAC OS용 다운로드,\/assets\/downloads\/ffmochi\/ffMOCHI-local\.dmg,2/);
   assert.match(openWorkLinks, /jebi-agent,Github 페이지 연결,https:\/\/github\.com\/kyutomatte\/jebi_agent,1/);
@@ -940,6 +941,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /data-open-work-image/);
   assert.match(html, /data-open-work-title/);
   assert.match(html, /data-open-work-external-links/);
+  assert.match(html, /data-open-work-external-note/);
   assert.match(html, /data-open-work-features/);
   assert.doesNotMatch(html, /data-open-work-embed/);
   assert.match(html, /data-open-work-example/);
@@ -993,6 +995,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(js, /getOpenWorkExamples/);
   assert.match(js, /SPLATIFY_WEBAPP_URL/);
   assert.match(js, /syncSplatifyWebappFrames/);
+  assert.match(js, /externalNote/);
   assert.doesNotMatch(js, /openWorkEmbedsBySlug/);
   assert.match(js, /openWorkManualsBySlug/);
   assert.match(js, /getOpenWorkManuals/);
@@ -1029,6 +1032,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-media/);
   assert.match(css, /\.open-work-external-links/);
   assert.match(css, /\.open-work-external-link/);
+  assert.match(css, /\.open-work-external-note/);
   assert.match(css, /\.open-work-feature-grid/);
   assert.match(css, /\.open-work-example/);
   assert.match(css, /\.open-work-example-media\s+video\s*\{[^}]*width:\s*100%;/s);
