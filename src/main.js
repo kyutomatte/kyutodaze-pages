@@ -35,7 +35,7 @@ let beadCursorClickTimer = 0;
 const OVERVIEW_MEDIA_LIMIT = 3;
 const BEAD_CURTAIN_HOME_DELAY_MS = 2950;
 const BEAD_CURSOR_CLICK_MS = 720;
-const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify/";
+const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify-pre-release/";
 const DATA_CACHE_VERSION = "2026-07-16-jebi-github-link";
 const FEEDBACK_RECIPIENT = "gray.ojat@gmail.com";
 const FEEDBACK_ENDPOINT = (import.meta.env?.VITE_FEEDBACK_ENDPOINT ?? "").trim();
@@ -378,8 +378,7 @@ function syncBeadCursor(route) {
 }
 
 function getSplatifyExportUrl() {
-  const jobId = new URLSearchParams(window.location.search).get("jobId")?.trim();
-  return jobId ? `${SPLATIFY_WEBAPP_URL}export/${encodeURIComponent(jobId)}` : SPLATIFY_WEBAPP_URL;
+  return SPLATIFY_WEBAPP_URL;
 }
 
 function syncSplatifyWebappFrames(route) {

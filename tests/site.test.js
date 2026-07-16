@@ -32,7 +32,7 @@ test('portfolio runtime resolves data, navigation, and Formspree feedback withou
   assert.match(js, /new URL\(toPublicAssetUrl\(path\), window\.location\.origin\)/);
   assert.match(js, /window\.history\.pushState\(\{\}, "", `\$\{toSitePath\(nextPath\)\}/);
   assert.match(js, /"Accept": "application\/json"/);
-  assert.match(js, /https:\/\/kyutomatte\.github\.io\/splatify\//);
+  assert.match(js, /https:\/\/kyutomatte\.github\.io\/splatify-pre-release\//);
 });
 
 test('Pages route entry generation includes fixed routes, CSV slugs, and aliases', async () => {
@@ -454,6 +454,7 @@ test("local work media uses generated WebP previews before loading originals", a
   const packageJson = await readProjectFile("package.json");
 
   assert.equal(isPreviewableLocalMediaUrl("/assets/works/vfx-2026-showreel/01-main.mp4"), true);
+  assert.equal(isPreviewableLocalMediaUrl("/kyutodaze-pages/assets/works/vfx-2026-showreel/01-main.mp4"), true);
   assert.equal(isPreviewableLocalMediaUrl("/assets/works/vfx-2026-showreel/thumbs/01-main.mp4.webp"), false);
   assert.equal(isPreviewableLocalMediaUrl("https://example.com/image.jpg"), false);
   assert.equal(
@@ -463,6 +464,10 @@ test("local work media uses generated WebP previews before loading originals", a
   assert.equal(
     getMediaPreviewUrl("/assets/works/album-cover-laegyu/01-main.png"),
     "/assets/works/album-cover-laegyu/thumbs/01-main.png.webp"
+  );
+  assert.equal(
+    getMediaPreviewUrl("/kyutodaze-pages/assets/works/vfx-2026-showreel/01-main.mp4"),
+    "/kyutodaze-pages/assets/works/vfx-2026-showreel/thumbs/01-main.mp4.webp"
   );
   assert.equal(getMediaPreviewUrl("https://example.com/image.jpg"), "https://example.com/image.jpg");
 
@@ -496,6 +501,8 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(html, /data-bead-curtain-webgl/);
   assert.match(html, /data-bead-cursor/);
   assert.match(html, /Full-page interactive bead curtain/);
+  assert.match(html, /src="\/assets\/KYUTO-LOGO\.png"/);
+  assert.doesNotMatch(html, /%BASE_URL%assets\//);
   assert.doesNotMatch(html, /home-webgl-hero/);
   assert.match(js, /import \{ initHeroWebgl \} from "\.\/hero-webgl\.js";/);
   assert.match(js, /const routes = new Set\(\[[^\]]*"splatify-webapp"[^\]]*"splatify-webapp-export"[^\]]*\]\)/s);
@@ -539,8 +546,9 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(heroWebgl, /gl\.POINTS/);
   assert.match(heroWebgl, /uTrailMouse/);
   assert.match(heroWebgl, /uShockStrength/);
-  assert.match(heroWebgl, /hero_bg\.webp/);
-  assert.match(heroWebgl, /bead-curtain-points\.bin/);
+  assert.match(heroWebgl, /import \{ toPublicAssetUrl \} from "\.\/site-url\.js"/);
+  assert.match(heroWebgl, /const SOURCE_IMAGE_URL = toPublicAssetUrl\("\/assets\/hero_bg\.webp"\)/);
+  assert.match(heroWebgl, /const POINT_DATA_URL = toPublicAssetUrl\("\/assets\/bead-curtain-points\.bin"\)/);
   assert.match(heroWebgl, /const SAMPLE_STEP = 7;/);
   assert.match(heroWebgl, /const MAX_TRAIL_POINTS = 72;/);
   assert.match(heroWebgl, /const DESKTOP_PIXEL_RATIO_CAP = 1\.5;/);

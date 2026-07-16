@@ -1,5 +1,7 @@
-const SOURCE_IMAGE_URL = "/assets/hero_bg.webp";
-const POINT_DATA_URL = "/assets/bead-curtain-points.bin";
+import { toPublicAssetUrl } from "./site-url.js";
+
+const SOURCE_IMAGE_URL = toPublicAssetUrl("/assets/hero_bg.webp");
+const POINT_DATA_URL = toPublicAssetUrl("/assets/bead-curtain-points.bin");
 const POINT_FLOATS = 8;
 const SAMPLE_STEP = 7;
 const MAX_TRAIL_POINTS = 72;
