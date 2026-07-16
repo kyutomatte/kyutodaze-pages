@@ -849,7 +849,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkDetails, /SPLATIFY는 이미지와 영상을 가우시안 스타일의 포인트 비주얼로 변환하는 웹앱입니다/);
   assert.match(openWorkDetails, /JPG, PNG, MP4를 올려 브라우저에서 바로 프리뷰하고, 필요한 경우 MP4나 PNG로 출력하는 실험용 도구입니다/);
   assert.match(openWorkDetails, /이미지\/영상 업로드 기반 변환\|브라우저 WebGL 프리뷰\|MP4\/PNG 출력 흐름/);
-  assert.match(openWorkDetails, /현재는 브라우저에서 프리뷰를 확인할 수 있으며, 인코딩과 파일 렌더 기능은 준비 중입니다/);
+  assert.match(openWorkDetails, /현재는 브라우저 프리뷰만 제공됩니다\. 인코딩과 파일 렌더 기능은 준비 중입니다/);
   assert.doesNotMatch(openWorkDetails, /FastAPI 렌더 잡/);
   assert.match(openWorkDetails, /ffMOCHI는 macOS에서 영상 파일 용량을 가볍게 줄여주는 작은 앱입니다/);
   assert.match(openWorkDetails, /파일을 넣고 프리셋을 고르면 원본 옆에 압축된 MP4를 새로 만들어줍니다/);
@@ -1032,7 +1032,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-media/);
   assert.match(css, /\.open-work-external-links/);
   assert.match(css, /\.open-work-external-link/);
-  assert.match(css, /\.open-work-external-note/);
+  assert.match(css, /\.open-work-external-actions\s*\{[^}]*display:\s*grid;[^}]*gap:\s*0\.72rem;/s);
+  assert.match(css, /\.open-work-external-note\s*\{[^}]*border-top:\s*1px solid var\(--editorial-rule\);[^}]*overflow-wrap:\s*anywhere;[^}]*word-break:\s*normal;/s);
   assert.match(css, /\.open-work-feature-grid/);
   assert.match(css, /\.open-work-example/);
   assert.match(css, /\.open-work-example-media\s+video\s*\{[^}]*width:\s*100%;/s);
