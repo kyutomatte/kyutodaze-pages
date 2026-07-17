@@ -9,6 +9,8 @@ const DESKTOP_PIXEL_RATIO_CAP = 1.5;
 const MOBILE_PIXEL_RATIO_CAP = 1.25;
 const HERO_IMAGE_ASPECT = 1920 / 1072;
 const MOBILE_CURTAIN_FIT_ASPECT = 0.9;
+const MOBILE_CURTAIN_SCALE = 2.11;
+const MOBILE_CURTAIN_X_OFFSET = -0.044;
 const TRAIL_LINGER_SECONDS = 4.0;
 const TRAIL_POINT_MIN_DISTANCE = 0.006;
 const SHOCK_WIND_DELAY_SECONDS = 0.12;
@@ -34,6 +36,7 @@ uniform float uShockStrength;
 uniform float uSceneZoom;
 uniform float uBlackTunnel;
 uniform vec2 uSceneCoverScale;
+uniform vec2 uSceneOffset;
 const int MAX_TRAIL_POINTS = ${MAX_TRAIL_POINTS};
 uniform int uTrailCount;
 uniform vec2 uTrailMouse[MAX_TRAIL_POINTS];
@@ -116,7 +119,7 @@ void main()
     depthLift -= tunnelPull * 0.34;
 
     vec2 zoomedPos = uShockCenter + (pos - uShockCenter) * uSceneZoom;
-    gl_Position = vec4(zoomedPos * uSceneCoverScale, depthLift, 1.0);
+    gl_Position = vec4(zoomedPos * uSceneCoverScale + uSceneOffset, depthLift, 1.0);
     gl_PointSize = pointSize * uPointScale;
 
     vColor = pointColor * 1.24;
@@ -335,12 +338,20 @@ function getCoverTransform(viewportAspect, imageAspect = HERO_IMAGE_ASPECT) {
 }
 
 function getCurtainTransform(viewportAspect) {
-  if (viewportAspect < MOBILE_CURTAIN_FIT_ASPECT) return [2, 1];
-  return getCoverTransform(viewportAspect);
+  if (viewportAspect < MOBILE_CURTAIN_FIT_ASPECT) {
+    return {
+      scale: [MOBILE_CURTAIN_SCALE, 1],
+      offset: [MOBILE_CURTAIN_X_OFFSET, 0]
+    };
+  }
+  return { scale: getCoverTransform(viewportAspect), offset: [0, 0] };
 }
 
-function screenPositionToScene(position, coverScale) {
-  return [position[0] / coverScale[0], position[1] / coverScale[1]];
+function screenPositionToScene(position, transform) {
+  return [
+    (position[0] - transform.offset[0]) / transform.scale[0],
+    (position[1] - transform.offset[1]) / transform.scale[1]
+  ];
 }
 
 function updateMouseTrail(trail, cursor, now) {
@@ -474,6 +485,7 @@ export function initHeroWebgl(canvas) {
     sceneZoom: gl.getUniformLocation(splatProgram, "uSceneZoom"),
     blackTunnel: gl.getUniformLocation(splatProgram, "uBlackTunnel"),
     sceneCoverScale: gl.getUniformLocation(splatProgram, "uSceneCoverScale"),
+    sceneOffset: gl.getUniformLocation(splatProgram, "uSceneOffset"),
     trailCount: gl.getUniformLocation(splatProgram, "uTrailCount"),
     trailMouse: gl.getUniformLocation(splatProgram, "uTrailMouse"),
     trailAge: gl.getUniformLocation(splatProgram, "uTrailAge"),
@@ -506,8 +518,8 @@ export function initHeroWebgl(canvas) {
   };
 
   const updateTrailFromCursor = (now) => {
-    const curtainScale = getCurtainTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
-    trail = updateMouseTrail(trail, screenPositionToScene(cursor, curtainScale), now);
+    const curtainTransform = getCurtainTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
+    trail = updateMouseTrail(trail, screenPositionToScene(cursor, curtainTransform), now);
   };
 
   const handlePointerMove = (event) => {
@@ -538,8 +550,8 @@ export function initHeroWebgl(canvas) {
     const shock = computeShockState(shockStartedAt == null ? null : now - shockStartedAt);
     const trailUniforms = buildTrailUniforms(trail, now);
     const viewportAspect = canvas.width / Math.max(canvas.height, 1);
-    const curtainScale = getCurtainTransform(viewportAspect);
-    const sceneShockCenter = screenPositionToScene(shockCenter, curtainScale);
+    const curtainTransform = getCurtainTransform(viewportAspect);
+    const sceneShockCenter = screenPositionToScene(shockCenter, curtainTransform);
     const pointScale = Math.max(0.72, Math.min(canvas.width / 1200, 1.45));
 
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -572,7 +584,8 @@ export function initHeroWebgl(canvas) {
       setUniform(gl, splatUniforms.shockStrength, (location) => gl.uniform1f(location, shock.shockStrength));
       setUniform(gl, splatUniforms.sceneZoom, (location) => gl.uniform1f(location, shock.sceneZoom));
       setUniform(gl, splatUniforms.blackTunnel, (location) => gl.uniform1f(location, shock.blackTunnel));
-      setUniform(gl, splatUniforms.sceneCoverScale, (location) => gl.uniform2fv(location, curtainScale));
+      setUniform(gl, splatUniforms.sceneCoverScale, (location) => gl.uniform2fv(location, curtainTransform.scale));
+      setUniform(gl, splatUniforms.sceneOffset, (location) => gl.uniform2fv(location, curtainTransform.offset));
       setUniform(gl, splatUniforms.trailCount, (location) => gl.uniform1i(location, trailUniforms.count));
       setUniform(gl, splatUniforms.trailMouse, (location) => gl.uniform2fv(location, trailUniforms.positions));
       setUniform(gl, splatUniforms.trailAge, (location) => gl.uniform1fv(location, trailUniforms.ages));

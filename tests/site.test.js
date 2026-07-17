@@ -637,9 +637,13 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(heroWebgl, /function getCoverTransform\(viewportAspect, imageAspect = HERO_IMAGE_ASPECT\)/);
   assert.match(heroWebgl, /const MOBILE_CURTAIN_FIT_ASPECT = 0\.9;/);
   assert.match(heroWebgl, /function getCurtainTransform\(viewportAspect\)/);
-  assert.match(heroWebgl, /if \(viewportAspect < MOBILE_CURTAIN_FIT_ASPECT\) return \[2, 1\];/);
+  assert.match(heroWebgl, /const MOBILE_CURTAIN_SCALE = 2\.11;/);
+  assert.match(heroWebgl, /const MOBILE_CURTAIN_X_OFFSET = -0\.044;/);
+  assert.match(heroWebgl, /if \(viewportAspect < MOBILE_CURTAIN_FIT_ASPECT\) \{\s*return \{\s*scale: \[MOBILE_CURTAIN_SCALE, 1\],\s*offset: \[MOBILE_CURTAIN_X_OFFSET, 0\]\s*\};/s);
+  assert.match(heroWebgl, /return \{ scale: getCoverTransform\(viewportAspect\), offset: \[0, 0\] \};/);
   assert.match(heroWebgl, /function startTransition\(event\)/);
   assert.match(heroWebgl, /uniform vec2 uSceneCoverScale;/);
+  assert.match(heroWebgl, /uniform vec2 uSceneOffset;/);
   assert.match(heroWebgl, /uniform float uViewportAspect;/);
   assert.match(heroWebgl, /uniform float uImageAspect;/);
   assert.match(heroWebgl, /coverUV/);
@@ -651,6 +655,7 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.ok(pointerDownHandler);
   assert.doesNotMatch(pointerDownHandler[1], /shockStartedAt/);
   assert.match(heroWebgl, /return \{\s*startTransition,/s);
+  assert.match(heroWebgl, /gl_Position = vec4\(zoomedPos \* uSceneCoverScale \+ uSceneOffset, depthLift, 1\.0\);/);
 
   const points = new Float32Array(pointData.buffer, pointData.byteOffset, pointData.byteLength / 4);
   let leftFramePointCount = 0;
