@@ -118,11 +118,11 @@ test('Pages route entry generation includes fixed routes, CSV slugs, and aliases
   ]);
 });
 
-test('Pages workflow deploys the main branch with the project base and Formspree endpoint', async () => {
+test('Pages workflow deploys the main branch from the custom-domain root with the Formspree endpoint', async () => {
   const workflow = await readProjectFile('.github/workflows/deploy-pages.yml');
 
   assert.match(workflow, /branches:\s*\[main\]/);
-  assert.match(workflow, /VITE_BASE_PATH=\/\$\{\{ github\.event\.repository\.name \}\}\//);
+  assert.match(workflow, /VITE_BASE_PATH=\/\s+VITE_FEEDBACK_ENDPOINT/);
   assert.match(workflow, /VITE_FEEDBACK_ENDPOINT=https:\/\/formspree\.io\/f\/xkodoakr/);
   assert.match(workflow, /actions\/deploy-pages@v4/);
 });

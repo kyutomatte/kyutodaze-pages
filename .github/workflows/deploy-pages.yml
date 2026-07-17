@@ -24,7 +24,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: VITE_BASE_PATH=/${{ github.event.repository.name }}/ VITE_FEEDBACK_ENDPOINT=https://formspree.io/f/xkodoakr npm run build
+      - run: VITE_BASE_PATH=/ VITE_FEEDBACK_ENDPOINT=https://formspree.io/f/xkodoakr npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
