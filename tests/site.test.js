@@ -333,7 +333,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /fetchCsv\("\/data\/works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/work-media\.csv"\)/);
-  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-splatify-note-ui"/);
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-splatify-preview-button"/);
   assert.match(js, /url\.searchParams\.set\("v", DATA_CACHE_VERSION\)/);
   assert.match(js, /parseCsv/);
   assert.match(js, /getYouTubeEmbedUrl/);
@@ -850,7 +850,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkDetails, /SPLATIFY는 이미지와 영상을 가우시안 스타일의 포인트 비주얼로 변환하는 웹앱입니다/);
   assert.match(openWorkDetails, /JPG, PNG, MP4를 올려 브라우저에서 바로 프리뷰하고, 필요한 경우 MP4나 PNG로 출력하는 실험용 도구입니다/);
   assert.match(openWorkDetails, /이미지\/영상 업로드 기반 변환\|브라우저 WebGL 프리뷰\|MP4\/PNG 출력 흐름/);
-  assert.match(openWorkDetails, /현재는 브라우저 프리뷰만 제공됩니다\. 인코딩과 파일 렌더 기능은 준비 중입니다/);
+  assert.doesNotMatch(openWorkDetails, /현재는 브라우저 프리뷰만 제공됩니다/);
   assert.doesNotMatch(openWorkDetails, /FastAPI 렌더 잡/);
   assert.match(openWorkDetails, /ffMOCHI는 macOS에서 영상 파일 용량을 가볍게 줄여주는 작은 앱입니다/);
   assert.match(openWorkDetails, /파일을 넣고 프리셋을 고르면 원본 옆에 압축된 MP4를 새로 만들어줍니다/);
@@ -944,7 +944,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /data-open-work-title/);
   assert.match(html, /data-open-work-external-links/);
   assert.match(html, /data-open-work-external-note/);
-  assert.match(js, /function renderOpenWorkExternalNote/);
+  assert.doesNotMatch(js, /function renderOpenWorkExternalNote/);
   assert.match(js, /externalNote\.replaceChildren/);
   assert.match(html, /data-open-work-features/);
   assert.doesNotMatch(html, /data-open-work-embed/);
@@ -1036,10 +1036,11 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-media/);
   assert.match(css, /\.open-work-external-links/);
   assert.match(css, /\.open-work-external-link/);
+  assert.match(js, /open-work-external-link-note/);
+  assert.match(css, /\.open-work-external-link\.has-note\s*\{[^}]*flex-direction:\s*column;[^}]*gap:\s*0\.24rem;/s);
+  assert.match(css, /\.open-work-external-link-note\s*\{[^}]*font-size:\s*0\.72rem;[^}]*letter-spacing:\s*0\.08em;[^}]*line-height:\s*1;/s);
   assert.match(css, /\.open-work-external-actions\s*\{[^}]*display:\s*grid;[^}]*gap:\s*0\.58rem;/s);
-  assert.match(css, /\.open-work-external-note\s*\{[^}]*display:\s*flex;[^}]*width:\s*min\(100%,\s*64rem\);[^}]*align-items:\s*center;[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
-  assert.match(css, /\.open-work-external-note::before\s*\{[^}]*content:\s*"PREVIEW ONLY";/s);
-  assert.match(css, /\.open-work-external-note span\s*\{[^}]*min-width:\s*0;[^}]*white-space:\s*nowrap;/s);
+  assert.doesNotMatch(css, /\.open-work-external-note::before/);
   assert.doesNotMatch(js, /text\.match\(/);
   assert.match(css, /\.open-work-feature-grid/);
   assert.match(css, /\.open-work-example/);

@@ -36,7 +36,7 @@ const OVERVIEW_MEDIA_LIMIT = 3;
 const BEAD_CURTAIN_HOME_DELAY_MS = 2950;
 const BEAD_CURSOR_CLICK_MS = 720;
 const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify-pre-release/";
-const DATA_CACHE_VERSION = "2026-07-17-splatify-note-ui";
+const DATA_CACHE_VERSION = "2026-07-17-splatify-preview-button";
 const FEEDBACK_RECIPIENT = "gray.ojat@gmail.com";
 const FEEDBACK_ENDPOINT = (import.meta.env?.VITE_FEEDBACK_ENDPOINT ?? "").trim();
 
@@ -188,15 +188,16 @@ function getExternalLinkAttributes(url) {
   return /^(https?:|mailto:)/i.test(url) ? ' target="_blank" rel="noreferrer"' : "";
 }
 
-function renderOpenWorkExternalNote(element, note) {
-  const text = note?.trim() ?? "";
-  element.replaceChildren();
-  element.hidden = !text;
-  if (!text) return;
+function getOpenWorkExternalLinkNote(link) {
+  return link.url?.trim() === "/splatify-webapp" ? "PREVIEW ONLY" : "";
+}
 
-  const span = document.createElement("span");
-  span.textContent = text;
-  element.append(span);
+function renderOpenWorkExternalLinkContent(link) {
+  const note = getOpenWorkExternalLinkNote(link);
+  const noteMarkup = note
+    ? `<small class="open-work-external-link-note">${escapeHtml(note)}</small>`
+    : "";
+  return `<span class="open-work-external-link-label">${escapeHtml(link.label)}</span>${noteMarkup}`;
 }
 
 function groupGalleryMedia(items) {
@@ -1087,21 +1088,24 @@ function renderOpenWorkPage(slug) {
 
   if (externalActions && externalLinks && externalNote) {
     const links = openWorkExternalLinksBySlug[work.slug] ?? [];
-    externalActions.hidden = links.length === 0 && !work.externalNote;
+    externalActions.hidden = links.length === 0;
     externalLinks.hidden = links.length === 0;
     externalLinks.innerHTML = links
       .map((link) => {
         const safeUrl = getSafeOpenWorkExternalUrl(link.url);
+        const note = getOpenWorkExternalLinkNote(link);
+        const className = `open-work-external-link${note ? " has-note" : ""}`;
         if (!safeUrl) {
-          return `<span class="open-work-external-link is-disabled" aria-disabled="true">${escapeHtml(link.label)}</span>`;
+          return `<span class="${className} is-disabled" aria-disabled="true">${renderOpenWorkExternalLinkContent(link)}</span>`;
         }
 
             const downloadAttribute = safeUrl.startsWith("/assets/downloads/") ? " download" : "";
             const href = safeUrl.startsWith("/") ? toSitePath(safeUrl) : safeUrl;
-            return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
+            return `<a class="${className}" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${renderOpenWorkExternalLinkContent(link)}</a>`;
       })
       .join("");
-    renderOpenWorkExternalNote(externalNote, work.externalNote);
+    externalNote.hidden = true;
+    externalNote.replaceChildren();
   }
 
   if (media && image) {
