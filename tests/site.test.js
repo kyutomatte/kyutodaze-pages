@@ -1188,7 +1188,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-manual-heading h2\s*\{[^}]*overflow-wrap:\s*anywhere;/s);
   assert.match(css, /\.open-work-manual-step/);
   assert.match(css, /\.open-work-manual-step\s*\{[^}]*align-items:\s*baseline;/s);
-  assert.match(css, /\.open-work-manual-step p\s*\{[^}]*max-width:\s*none;/s);
+  assert.match(css, /\.open-work-manual-step\s*>\s*p\s*\{[^}]*grid-column:\s*2;[^}]*max-width:\s*none;/s);
+  assert.doesNotMatch(css, /\.open-work-manual-step p\s*\{[^}]*grid-column:\s*2;/s);
   assert.match(css, /\.open-work-manual-step\s*>\s*:nth-child\(n \+ 3\)\s*\{\s*grid-column:\s*2;/s);
   assert.match(css, /\.open-work-nav\s*\{\s*max-width:\s*none;/s);
   assert.match(css, /\.open-work-feature\s*\{\s*min-height:\s*0;\s*align-content:\s*start;/s);

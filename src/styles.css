@@ -3132,7 +3132,7 @@ hr {
     min-width: 0;
   }
 
-  .open-work-manual-step p {
+  .open-work-manual-step > p {
     grid-column: 2;
     max-width: none;
   }
