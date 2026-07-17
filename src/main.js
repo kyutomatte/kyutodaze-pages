@@ -37,6 +37,7 @@ const OVERVIEW_MEDIA_LIMIT = 3;
 const BEAD_CURTAIN_HOME_DELAY_MS = 2950;
 const BEAD_CURSOR_CLICK_MS = 720;
 const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify-pre-release/";
+const JEJU_WAVE_RADIO_WEBAPP_PATH = "/apps/jeju-wave-radio/web/";
 const DATA_CACHE_VERSION = "2026-07-17-jeju-wave-radio-preview";
 const FEEDBACK_RECIPIENT = "gray.ojat@gmail.com";
 const FEEDBACK_ENDPOINT = (import.meta.env?.VITE_FEEDBACK_ENDPOINT ?? "").trim();
@@ -397,6 +398,7 @@ function getSplatifyExportUrl() {
 function syncSplatifyWebappFrames(route) {
   const webappFrame = document.querySelector("[data-splatify-webapp-frame]");
   const exportFrame = document.querySelector("[data-splatify-export-frame]");
+  const jejuWaveRadioFrame = document.querySelector("[data-jeju-wave-radio-frame]");
 
   if (webappFrame) {
     if (route === "splatify-webapp") {
@@ -411,6 +413,14 @@ function syncSplatifyWebappFrames(route) {
       exportFrame.src = getSplatifyExportUrl();
     } else {
       exportFrame.removeAttribute("src");
+    }
+  }
+
+  if (jejuWaveRadioFrame) {
+    if (route === "jeju-wave-radio-webapp") {
+      jejuWaveRadioFrame.src = toPublicAssetUrl(JEJU_WAVE_RADIO_WEBAPP_PATH);
+    } else {
+      jejuWaveRadioFrame.removeAttribute("src");
     }
   }
 }
