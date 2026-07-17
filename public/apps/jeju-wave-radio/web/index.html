@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f3f1ec">
+    <title>JEJU WAVE RADIO</title>
+    <link rel="stylesheet" href="./styles.css?v=20260717-masthead-note-gray">
+  </head>
+  <body>
+    <header class="masthead">
+      <h1 id="title">JEJU WAVE RADIO</h1>
+      <p class="masthead-note">PureData로 설계한 패치를 사이트 임베드를 위해 WebGL/Web Audio 기반으로 재구성했습니다.</p>
+    </header>
+    <main class="studio" aria-labelledby="title">
+      <section class="control-column" aria-label="Sound patch controls">
+        <section class="panel transport-panel"><p class="kicker">PATCH TRANSPORT</p><h2>Audio + Data</h2>
+          <div class="button-row"><button id="start-audio" type="button">START AUDIO</button><button id="refresh-live-data" type="button">POLL JEJU DATA</button></div>
+          <label>MASTER LEVEL <input id="master-level" type="range" min="0" max="1" step="0.01" value="0.72"></label>
+          <p id="status" role="status">Waiting for the patch engine.</p>
+        </section>
+
+        <section class="panel instrument-panel"><p class="kicker">SEA BUS</p><h2>Marine Voices</h2><div id="sea-instruments"></div></section>
+        <section class="panel instrument-panel"><p class="kicker">WIND BUS</p><h2>Wind + Tide Voices</h2><div id="wind-instruments"></div></section>
+        <section class="panel instrument-panel"><p class="kicker">AIR BUS</p><h2>Sky + Particle Voices</h2><div id="sky-instruments"></div></section>
+        <section class="panel manual-panel"><p class="kicker">TRIGGER MATRIX</p><h2>Manual Notes</h2><div id="manual-instruments"></div></section>
+      </section>
+
+      <aside class="preview-panel">
+        <div class="stage"><canvas id="visual" aria-label="Jeju weather video monitor"></canvas></div>
+        <button id="blue-night" class="motif-control" type="button" aria-pressed="false" aria-label="제주도의 푸른밤 모티프 켜기/끄기">
+          <span class="motif-button-plate" aria-hidden="true">
+            <img class="motif-icon" src="./assets/jeju-blue-night-button.png" alt="">
+          </span>
+          <span class="motif-copy"><span>제주도의 푸른밤</span><small>memory motif</small></span>
+        </button>
+      </aside>
+    </main>
+    <script type="module" src="./src/app.js?v=20260717-masthead-note"></script>
+  </body>
+</html>
