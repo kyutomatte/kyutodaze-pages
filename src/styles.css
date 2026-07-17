@@ -652,6 +652,10 @@ body[data-page="bead-curtain"] {
   opacity: 0;
 }
 
+.bead-curtain-canvas.is-entering {
+  pointer-events: none;
+}
+
 .bead-cursor {
   --bead-cursor-x: -10rem;
   --bead-cursor-y: -10rem;

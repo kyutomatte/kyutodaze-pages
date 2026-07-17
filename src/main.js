@@ -31,6 +31,8 @@ let openWorkManualsBySlug = {};
 let openWorksPage = { title: "Open Works", summary: "다양한 작업들의 아카이빙 및 실험실 공간입니다." };
 let beadCurtainHero = null;
 let beadCurtainEnterTimer = 0;
+let beadCurtainTouchArmed = false;
+let beadCurtainEntering = false;
 let beadCursor = null;
 let beadCursorClickTimer = 0;
 const OVERVIEW_MEDIA_LIMIT = 3;
@@ -419,9 +421,44 @@ function clearBeadCurtainEnterTimer() {
   beadCurtainEnterTimer = 0;
 }
 
-function enterHomeAfterBeadCurtain() {
-  if (getRoute(window.location.pathname) !== "bead-curtain" || beadCurtainEnterTimer) return;
+function isCoarsePointerInput(event) {
+  return event?.pointerType === "touch" || window.matchMedia?.("(hover: none), (pointer: coarse)").matches === true;
+}
 
+function resetBeadCurtainInteraction() {
+  beadCurtainTouchArmed = false;
+  beadCurtainEntering = false;
+  document.querySelector("[data-bead-curtain-webgl]")?.classList.remove("is-touch-armed", "is-entering");
+}
+
+function handleBeadCurtainPointerDown(event) {
+  const canvas = event.target.closest("[data-bead-curtain-webgl]");
+  if (!canvas || getRoute(window.location.pathname) !== "bead-curtain") return;
+
+  if (beadCurtainEntering) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
+  }
+
+  if (!isCoarsePointerInput(event)) return;
+
+  if (!beadCurtainTouchArmed) {
+    beadCurtainTouchArmed = true;
+    canvas.classList.add("is-touch-armed");
+    return;
+  }
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  enterHomeAfterBeadCurtain();
+}
+
+function enterHomeAfterBeadCurtain() {
+  if (getRoute(window.location.pathname) !== "bead-curtain" || beadCurtainEnterTimer || beadCurtainEntering) return;
+
+  beadCurtainEntering = true;
+  document.querySelector("[data-bead-curtain-webgl]")?.classList.add("is-entering");
   ensureBeadCursor();
   beadCursor?.classList.add("is-whiteout");
 
@@ -432,7 +469,10 @@ function enterHomeAfterBeadCurtain() {
 }
 
 function renderRoute(route) {
-  if (route !== "bead-curtain") clearBeadCurtainEnterTimer();
+  if (route !== "bead-curtain") {
+    clearBeadCurtainEnterTimer();
+    resetBeadCurtainInteraction();
+  }
   document.body.dataset.page = route;
   syncBeadCursor(route);
   syncSplatifyWebappFrames(route);
@@ -448,6 +488,7 @@ function renderRoute(route) {
   } else if (route === "feedback") {
     renderFeedbackPage();
   } else if (route === "bead-curtain") {
+    resetBeadCurtainInteraction();
     ensureBeadCurtainHero();
   }
 
@@ -1402,9 +1443,12 @@ document.addEventListener(
   true
 );
 
+document.addEventListener("pointerdown", handleBeadCurtainPointerDown, true);
+
 document.addEventListener("click", (event) => {
   if (event.target.closest("[data-bead-curtain-webgl]")) {
     event.preventDefault();
+    if (isCoarsePointerInput()) return;
     enterHomeAfterBeadCurtain();
     return;
   }

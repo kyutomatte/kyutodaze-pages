@@ -7,6 +7,7 @@ const SAMPLE_STEP = 7;
 const MAX_TRAIL_POINTS = 72;
 const DESKTOP_PIXEL_RATIO_CAP = 1.5;
 const MOBILE_PIXEL_RATIO_CAP = 1.25;
+const HERO_IMAGE_ASPECT = 1920 / 1072;
 const TRAIL_LINGER_SECONDS = 4.0;
 const TRAIL_POINT_MIN_DISTANCE = 0.006;
 const SHOCK_WIND_DELAY_SECONDS = 0.12;
@@ -31,6 +32,7 @@ uniform vec2 uShockCenter;
 uniform float uShockStrength;
 uniform float uSceneZoom;
 uniform float uBlackTunnel;
+uniform vec2 uSceneCoverScale;
 const int MAX_TRAIL_POINTS = ${MAX_TRAIL_POINTS};
 uniform int uTrailCount;
 uniform vec2 uTrailMouse[MAX_TRAIL_POINTS];
@@ -113,7 +115,7 @@ void main()
     depthLift -= tunnelPull * 0.34;
 
     vec2 zoomedPos = uShockCenter + (pos - uShockCenter) * uSceneZoom;
-    gl_Position = vec4(zoomedPos, depthLift, 1.0);
+    gl_Position = vec4(zoomedPos * uSceneCoverScale, depthLift, 1.0);
     gl_PointSize = pointSize * uPointScale;
 
     vColor = pointColor * 1.24;
@@ -172,12 +174,20 @@ precision mediump float;
 varying vec2 vUV;
 
 uniform sampler2D uBackgroundTexture;
+uniform float uViewportAspect;
+uniform float uImageAspect;
 
 void main()
 {
-    vec3 source = texture2D(uBackgroundTexture, vUV).rgb;
-    float ndcX = vUV.x * 2.0 - 1.0;
-    float ndcY = 1.0 - vUV.y * 2.0;
+    vec2 coverUV = vUV;
+    if (uViewportAspect > uImageAspect) {
+        coverUV.y = (vUV.y - 0.5) * (uImageAspect / uViewportAspect) + 0.5;
+    } else {
+        coverUV.x = (vUV.x - 0.5) * (uViewportAspect / uImageAspect) + 0.5;
+    }
+    vec3 source = texture2D(uBackgroundTexture, coverUV).rgb;
+    float ndcX = coverUV.x * 2.0 - 1.0;
+    float ndcY = 1.0 - coverUV.y * 2.0;
     float curtainX = step(-0.455, ndcX) * (1.0 - step(0.50, ndcX));
     float curtainY = step(-0.99, ndcY) * (1.0 - step(0.99, ndcY));
     float curtainCutout = curtainX * curtainY;
@@ -317,6 +327,16 @@ function cursorPositionToWorld(event, canvas) {
   ];
 }
 
+function getCoverTransform(viewportAspect, imageAspect = HERO_IMAGE_ASPECT) {
+  return viewportAspect > imageAspect
+    ? [1, viewportAspect / imageAspect]
+    : [imageAspect / viewportAspect, 1];
+}
+
+function screenPositionToScene(position, coverScale) {
+  return [position[0] / coverScale[0], position[1] / coverScale[1]];
+}
+
 function updateMouseTrail(trail, cursor, now) {
   const recent = trail.filter((point) => now - point.time <= TRAIL_LINGER_SECONDS);
   const last = recent[recent.length - 1];
@@ -447,6 +467,7 @@ export function initHeroWebgl(canvas) {
     shockStrength: gl.getUniformLocation(splatProgram, "uShockStrength"),
     sceneZoom: gl.getUniformLocation(splatProgram, "uSceneZoom"),
     blackTunnel: gl.getUniformLocation(splatProgram, "uBlackTunnel"),
+    sceneCoverScale: gl.getUniformLocation(splatProgram, "uSceneCoverScale"),
     trailCount: gl.getUniformLocation(splatProgram, "uTrailCount"),
     trailMouse: gl.getUniformLocation(splatProgram, "uTrailMouse"),
     trailAge: gl.getUniformLocation(splatProgram, "uTrailAge"),
@@ -458,6 +479,8 @@ export function initHeroWebgl(canvas) {
   const backgroundUniforms = {
     shockCenter: gl.getUniformLocation(backgroundProgram, "uShockCenter"),
     sceneZoom: gl.getUniformLocation(backgroundProgram, "uSceneZoom"),
+    viewportAspect: gl.getUniformLocation(backgroundProgram, "uViewportAspect"),
+    imageAspect: gl.getUniformLocation(backgroundProgram, "uImageAspect"),
     backgroundTexture: gl.getUniformLocation(backgroundProgram, "uBackgroundTexture")
   };
   const whiteoutUniforms = {
@@ -478,14 +501,16 @@ export function initHeroWebgl(canvas) {
 
   const handlePointerMove = (event) => {
     cursor = cursorPositionToWorld(event, canvas);
-    trail = updateMouseTrail(trail, cursor, performance.now() / 1000);
+    const coverScale = getCoverTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
+    trail = updateMouseTrail(trail, screenPositionToScene(cursor, coverScale), performance.now() / 1000);
   };
 
   const handlePointerDown = (event) => {
     cursor = cursorPositionToWorld(event, canvas);
     shockCenter = cursor;
     shockStartedAt = performance.now() / 1000;
-    trail = updateMouseTrail(trail, cursor, shockStartedAt);
+    const coverScale = getCoverTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
+    trail = updateMouseTrail(trail, screenPositionToScene(cursor, coverScale), shockStartedAt);
   };
 
   canvas.addEventListener("pointermove", handlePointerMove);
@@ -498,7 +523,9 @@ export function initHeroWebgl(canvas) {
     const now = performance.now() / 1000;
     const shock = computeShockState(shockStartedAt == null ? null : now - shockStartedAt);
     const trailUniforms = buildTrailUniforms(trail, now);
-    const aspect = canvas.width / Math.max(canvas.height, 1);
+    const viewportAspect = canvas.width / Math.max(canvas.height, 1);
+    const coverScale = getCoverTransform(viewportAspect);
+    const sceneShockCenter = screenPositionToScene(shockCenter, coverScale);
     const pointScale = Math.max(0.72, Math.min(canvas.width / 1200, 1.45));
 
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -511,6 +538,8 @@ export function initHeroWebgl(canvas) {
       bindQuadAttributes(gl, backgroundProgram, quadBuffer);
       setUniform(gl, backgroundUniforms.shockCenter, (location) => gl.uniform2fv(location, shockCenter));
       setUniform(gl, backgroundUniforms.sceneZoom, (location) => gl.uniform1f(location, shock.sceneZoom));
+      setUniform(gl, backgroundUniforms.viewportAspect, (location) => gl.uniform1f(location, viewportAspect));
+      setUniform(gl, backgroundUniforms.imageAspect, (location) => gl.uniform1f(location, HERO_IMAGE_ASPECT));
       setUniform(gl, backgroundUniforms.backgroundTexture, (location) => gl.uniform1i(location, 0));
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, backgroundTexture);
@@ -523,12 +552,13 @@ export function initHeroWebgl(canvas) {
       gl.useProgram(splatProgram);
       bindPointAttributes(gl, splatProgram, pointBuffer);
       setUniform(gl, splatUniforms.time, (location) => gl.uniform1f(location, now));
-      setUniform(gl, splatUniforms.aspect, (location) => gl.uniform1f(location, aspect));
+      setUniform(gl, splatUniforms.aspect, (location) => gl.uniform1f(location, HERO_IMAGE_ASPECT));
       setUniform(gl, splatUniforms.pointScale, (location) => gl.uniform1f(location, pointScale));
-      setUniform(gl, splatUniforms.shockCenter, (location) => gl.uniform2fv(location, shockCenter));
+      setUniform(gl, splatUniforms.shockCenter, (location) => gl.uniform2fv(location, sceneShockCenter));
       setUniform(gl, splatUniforms.shockStrength, (location) => gl.uniform1f(location, shock.shockStrength));
       setUniform(gl, splatUniforms.sceneZoom, (location) => gl.uniform1f(location, shock.sceneZoom));
       setUniform(gl, splatUniforms.blackTunnel, (location) => gl.uniform1f(location, shock.blackTunnel));
+      setUniform(gl, splatUniforms.sceneCoverScale, (location) => gl.uniform2fv(location, coverScale));
       setUniform(gl, splatUniforms.trailCount, (location) => gl.uniform1i(location, trailUniforms.count));
       setUniform(gl, splatUniforms.trailMouse, (location) => gl.uniform2fv(location, trailUniforms.positions));
       setUniform(gl, splatUniforms.trailAge, (location) => gl.uniform1fv(location, trailUniforms.ages));

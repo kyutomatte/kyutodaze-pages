@@ -587,6 +587,14 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(js, /beadCursor\.classList\.remove\("is-whiteout",\s*"is-clicking"\)/);
   assert.match(js, /window\.addEventListener\(\s*"mousedown"/);
   assert.match(js, /const BEAD_CURTAIN_HOME_DELAY_MS = 2950;/);
+  assert.match(js, /let beadCurtainTouchArmed = false;/);
+  assert.match(js, /let beadCurtainEntering = false;/);
+  assert.match(js, /function isCoarsePointerInput\(event\)/);
+  assert.match(js, /function handleBeadCurtainPointerDown\(event\)/);
+  assert.match(js, /if \(!beadCurtainTouchArmed\) \{\s*beadCurtainTouchArmed = true;/s);
+  assert.match(js, /beadCurtainEntering = true;/);
+  assert.match(js, /event\.stopImmediatePropagation\(\);/);
+  assert.match(js, /if \(isCoarsePointerInput\(\)\) return;/);
   assert.match(js, /enterHomeAfterBeadCurtain/);
   assert.match(js, /navigate\("\/home"\)/);
   assert.match(js, /route === "bead-curtain" \? "\/"/);
@@ -619,6 +627,12 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(heroWebgl, /const MAX_TRAIL_POINTS = 72;/);
   assert.match(heroWebgl, /const DESKTOP_PIXEL_RATIO_CAP = 1\.5;/);
   assert.match(heroWebgl, /const MOBILE_PIXEL_RATIO_CAP = 1\.25;/);
+  assert.match(heroWebgl, /const HERO_IMAGE_ASPECT = 1920 \/ 1072;/);
+  assert.match(heroWebgl, /function getCoverTransform\(viewportAspect, imageAspect = HERO_IMAGE_ASPECT\)/);
+  assert.match(heroWebgl, /uniform vec2 uSceneCoverScale;/);
+  assert.match(heroWebgl, /uniform float uViewportAspect;/);
+  assert.match(heroWebgl, /uniform float uImageAspect;/);
+  assert.match(heroWebgl, /coverUV/);
   assert.match(heroWebgl, /fetchPointData/);
   assert.match(heroWebgl, /response\.arrayBuffer\(\)/);
   assert.doesNotMatch(heroWebgl, /getImageData\(image\)/);
