@@ -18,14 +18,6 @@ enhypen-XO,true,ENHYPEN,Music Video,2024,,XO' M/V
 enhypen-concept-cinema,true,ENHYPEN,Music Video,2024,,UNTOLD' Concept Cinema
 enhypen-romance-untold-preview,true,ENHYPEN,Music Video,2024,,ROMANCE : UNTOLD' Preview
 enhypen-romance-untold-album,true,ENHYPEN,Album,2024,,2nd Album 'ROMANCE : UNTOLD'
-ohir-brand-film,true,OHIR,AI Works / 3D,2026,,‘OHIR' BRAND FILM - FULL AI
-ohir-brand-filmalter,1,OHIR,AI Works / 3D,2026,,‘OHIR' BRAND FILM(ALTERS) - FULL AI
-poster-2026-kyuto31,true,GRAPHIC,GRAPHIC,2026,,BIRTHDAY VISUALS for KYUTO
-poster-2025-kyuto30,true,GRAPHIC,GRAPHIC,2025,,BIRTHDAY VISUALS for KYUTO
-poster-2025-hanni,true,GRAPHIC,GRAPHIC,2024,,BIRTHDAY VISUALS for JONGIN
-album-cover-lack,true,GRAPHIC,GRAPHIC,2025,,ALBUM COVER for LACK
-album-cover-crane,true,GRAPHIC,GRAPHIC,2025,,ALBUM COVER for CRANE
-album-cover-laegyu,false,GRAPHIC,GRAPHIC,2024,,ALBUM COVER for LAEGYU
 vfx-2026-showreel,true,AI Works / 3D,AI Works / 3D,2026,,Personal Work - FULL AI
 vfx-2026-kyuto-butterflyland,true,AI Works / 3D,AI Works / 3D,2026,,[KYUTO TURNS 31 FILM #01] - FULL AI
 vfx-2026-kyuto-rabbit,true,AI Works / 3D,AI Works / 3D,2026,,[KYUTO TURNS 31 FILM #02] - FULL AI
@@ -42,6 +34,8 @@ vfx-2025-xg,1,AI Works / 3D,AI Works / 3D,2025,,[Something Ain’t Right] - FULL
 vfx-2025-aesop,1,AI Works / 3D,AI Works / 3D,2025,,[Aesop] - 3D Comp
 vfx-2025-kiiikiii,1,AI Works / 3D,AI Works / 3D,2025,,[BTG] - FULL 3D
 vfx-2025-vivienne,1,AI Works / 3D,AI Works / 3D,2025,,[Vivienne Westwood] - FULL 3D
+ohir-brand-film,true,OHIR,AI Works / 3D,2026,,‘OHIR' BRAND FILM - FULL AI
+ohir-brand-filmalter,1,OHIR,AI Works / 3D,2026,,‘OHIR' BRAND FILM(ALTERS) - FULL AI
 ojat-styling-01,true,OJAT,Fashion,2023,,VISUAL DIRECTING for EDITORIAL
 ojat-lookbook-2021,true,OJAT,Fashion,2021,,'OJAT' 21' LOOKBOOK
 ojat-lookbook-2021-editorial,true,OJAT,Fashion,2021,,‘OJAT' 21' EDITORIAL
@@ -62,3 +56,9 @@ ojat-magazine-ugg,true,OJAT,Fashion,2022,,OJAT for UGG & AGE @shinsegae
 ojat-magazine-bomi,true,OJAT,Fashion,2022,,OJAT for BOMI(Apink) @MAPS
 ojat-magazine-breakmag,true,OJAT,Fashion,2022,,OJAT for BREAK MAGAZINE
 ojat-magazine-cakemag,true,OJAT,Fashion,2022,,OJAT for CAKE MAGAZINE
+poster-2026-kyuto31,true,GRAPHIC,GRAPHIC,2026,,BIRTHDAY VISUALS for KYUTO
+poster-2025-kyuto30,true,GRAPHIC,GRAPHIC,2025,,BIRTHDAY VISUALS for KYUTO
+poster-2025-hanni,true,GRAPHIC,GRAPHIC,2024,,BIRTHDAY VISUALS for JONGIN
+album-cover-lack,true,GRAPHIC,GRAPHIC,2025,,ALBUM COVER for LACK
+album-cover-crane,true,GRAPHIC,GRAPHIC,2025,,ALBUM COVER for CRANE
+album-cover-laegyu,false,GRAPHIC,GRAPHIC,2024,,ALBUM COVER for LAEGYU

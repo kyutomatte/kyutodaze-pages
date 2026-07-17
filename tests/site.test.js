@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { statSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
+import sharp from "sharp";
 
 async function importProjectModule(path) {
   return import(new URL(`../${path}`, import.meta.url));
@@ -14,6 +15,37 @@ async function readProjectFile(path) {
 async function readProjectBytes(path) {
   return readFile(new URL(`../${path}`, import.meta.url));
 }
+
+test("favicon uses a large transparent PNG", async () => {
+  const html = await readProjectFile("index.html");
+
+  assert.match(html, /<link rel="icon" type="image\/png" href="\/assets\/favicon\.png" \/>/);
+
+  const { data, info } = await sharp(await readProjectBytes("public/assets/favicon.png"))
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  let minX = info.width;
+  let minY = info.height;
+  let maxX = -1;
+  let maxY = -1;
+
+  for (let y = 0; y < info.height; y += 1) {
+    for (let x = 0; x < info.width; x += 1) {
+      if (data[(y * info.width + x) * 4 + 3] === 0) continue;
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+  }
+
+  assert.equal(info.width, 512);
+  assert.equal(info.height, 512);
+  assert.equal(data[3], 0);
+  assert.ok(Math.max(maxX - minX + 1, maxY - minY + 1) >= 430);
+  assert.ok(Math.min(maxX - minX + 1, maxY - minY + 1) >= 320);
+});
 
 test('site URL helpers preserve routes and assets below a GitHub Pages project base', async () => {
   const siteUrl = await importProjectModule('src/site-url.js');
@@ -647,6 +679,16 @@ test("editable CSV data drives home works and open works", async () => {
   const readme = await readProjectFile("README.md");
 
   assert.match(works, /^id,overview,artist,category,year,url,text/m);
+  const requestedArtistOrder = ["BLACKPINK", "BABYMONSTER", "ENHYPEN", "AI Works / 3D", "OHIR", "OJAT", "GRAPHIC"];
+  const artistOrder = [
+    ...new Set(
+      [...works.matchAll(/^[^,\r\n]+,[^,\r\n]*,([^,\r\n]+),/gm)]
+        .map(([, artist]) => artist)
+        .filter((artist) => requestedArtistOrder.includes(artist))
+    )
+  ];
+
+  assert.deepEqual(artistOrder, requestedArtistOrder);
   assert.match(works, /blackpink-go,true,BLACKPINK,Music Video,2026,/);
   assert.match(works, /blackpink-go,true,BLACKPINK,Music Video,2026,,GO' M\/V/);
   assert.match(works, /babymonster-ilikeit,true,BABYMONSTER,Music Video,2026,,I LIKE IT' M\/V/);
