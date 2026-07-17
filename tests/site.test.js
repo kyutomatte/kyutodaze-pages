@@ -621,6 +621,7 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(css, /@keyframes bead-cursor-whiteout/);
   assert.match(css, /@media \(hover: none\), \(pointer: coarse\)\s*\{[\s\S]*?\.bead-cursor\s*\{\s*display: block;/);
   assert.match(css, /\.bead-cursor\.is-visible\s*\{\s*--bead-cursor-x: 50vw;\s*--bead-cursor-y: 56vh;\s*opacity: 0\.88;\s*animation: bead-cursor-mobile-float 1\.8s ease-in-out infinite;/s);
+  assert.match(css, /\.bead-cursor\.is-visible\.is-whiteout\s*\{\s*animation: bead-cursor-whiteout 2\.24s ease-in forwards;/s);
   assert.match(css, /@keyframes bead-cursor-mobile-float/);
   assert.ok(cursorAsset.byteLength > 10000);
   assert.doesNotMatch(html, /data-route="splatify"/);

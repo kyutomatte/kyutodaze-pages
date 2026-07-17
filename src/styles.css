@@ -839,6 +839,10 @@ body[data-page="bead-curtain"] {
   .bead-cursor.is-visible.has-position {
     animation: none;
   }
+
+  .bead-cursor.is-visible.is-whiteout {
+    animation: bead-cursor-whiteout 2.24s ease-in forwards;
+  }
 }
 
 @keyframes bead-cursor-mobile-float {
