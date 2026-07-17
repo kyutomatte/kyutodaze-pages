@@ -599,6 +599,8 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(js, /beadCurtainEntering = true;/);
   assert.match(js, /event\.stopImmediatePropagation\(\);/);
   assert.match(js, /if \(isCoarsePointerInput\(\)\) return;/);
+  assert.match(js, /beadCurtainHero\?\.startTransition\(event\);/);
+  assert.match(js, /enterHomeAfterBeadCurtain\(event\);/);
   assert.match(js, /enterHomeAfterBeadCurtain/);
   assert.match(js, /navigate\("\/home"\)/);
   assert.match(js, /route === "bead-curtain" \? "\/"/);
@@ -633,6 +635,10 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(heroWebgl, /const MOBILE_PIXEL_RATIO_CAP = 1\.25;/);
   assert.match(heroWebgl, /const HERO_IMAGE_ASPECT = 1920 \/ 1072;/);
   assert.match(heroWebgl, /function getCoverTransform\(viewportAspect, imageAspect = HERO_IMAGE_ASPECT\)/);
+  assert.match(heroWebgl, /const MOBILE_CURTAIN_FIT_ASPECT = 0\.9;/);
+  assert.match(heroWebgl, /function getCurtainTransform\(viewportAspect\)/);
+  assert.match(heroWebgl, /if \(viewportAspect < MOBILE_CURTAIN_FIT_ASPECT\) return \[2, 1\];/);
+  assert.match(heroWebgl, /function startTransition\(event\)/);
   assert.match(heroWebgl, /uniform vec2 uSceneCoverScale;/);
   assert.match(heroWebgl, /uniform float uViewportAspect;/);
   assert.match(heroWebgl, /uniform float uImageAspect;/);
@@ -641,6 +647,10 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(heroWebgl, /response\.arrayBuffer\(\)/);
   assert.doesNotMatch(heroWebgl, /getImageData\(image\)/);
   assert.match(heroWebgl, /float curtainX = step\(-0\.455, ndcX\)/);
+  const pointerDownHandler = heroWebgl.match(/const handlePointerDown = \(event\) => \{([\s\S]*?)\n  \};/);
+  assert.ok(pointerDownHandler);
+  assert.doesNotMatch(pointerDownHandler[1], /shockStartedAt/);
+  assert.match(heroWebgl, /return \{\s*startTransition,/s);
 
   const points = new Float32Array(pointData.buffer, pointData.byteOffset, pointData.byteLength / 4);
   let leftFramePointCount = 0;

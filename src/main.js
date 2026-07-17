@@ -451,14 +451,15 @@ function handleBeadCurtainPointerDown(event) {
 
   event.preventDefault();
   event.stopImmediatePropagation();
-  enterHomeAfterBeadCurtain();
+  enterHomeAfterBeadCurtain(event);
 }
 
-function enterHomeAfterBeadCurtain() {
+function enterHomeAfterBeadCurtain(event) {
   if (getRoute(window.location.pathname) !== "bead-curtain" || beadCurtainEnterTimer || beadCurtainEntering) return;
 
   beadCurtainEntering = true;
   document.querySelector("[data-bead-curtain-webgl]")?.classList.add("is-entering");
+  beadCurtainHero?.startTransition(event);
   ensureBeadCursor();
   beadCursor?.classList.add("is-whiteout");
 
@@ -1449,7 +1450,7 @@ document.addEventListener("click", (event) => {
   if (event.target.closest("[data-bead-curtain-webgl]")) {
     event.preventDefault();
     if (isCoarsePointerInput()) return;
-    enterHomeAfterBeadCurtain();
+    enterHomeAfterBeadCurtain(event);
     return;
   }
 

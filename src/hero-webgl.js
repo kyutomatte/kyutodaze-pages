@@ -8,6 +8,7 @@ const MAX_TRAIL_POINTS = 72;
 const DESKTOP_PIXEL_RATIO_CAP = 1.5;
 const MOBILE_PIXEL_RATIO_CAP = 1.25;
 const HERO_IMAGE_ASPECT = 1920 / 1072;
+const MOBILE_CURTAIN_FIT_ASPECT = 0.9;
 const TRAIL_LINGER_SECONDS = 4.0;
 const TRAIL_POINT_MIN_DISTANCE = 0.006;
 const SHOCK_WIND_DELAY_SECONDS = 0.12;
@@ -333,6 +334,11 @@ function getCoverTransform(viewportAspect, imageAspect = HERO_IMAGE_ASPECT) {
     : [imageAspect / viewportAspect, 1];
 }
 
+function getCurtainTransform(viewportAspect) {
+  if (viewportAspect < MOBILE_CURTAIN_FIT_ASPECT) return [2, 1];
+  return getCoverTransform(viewportAspect);
+}
+
 function screenPositionToScene(position, coverScale) {
   return [position[0] / coverScale[0], position[1] / coverScale[1]];
 }
@@ -499,19 +505,27 @@ export function initHeroWebgl(canvas) {
     }
   };
 
+  const updateTrailFromCursor = (now) => {
+    const curtainScale = getCurtainTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
+    trail = updateMouseTrail(trail, screenPositionToScene(cursor, curtainScale), now);
+  };
+
   const handlePointerMove = (event) => {
     cursor = cursorPositionToWorld(event, canvas);
-    const coverScale = getCoverTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
-    trail = updateMouseTrail(trail, screenPositionToScene(cursor, coverScale), performance.now() / 1000);
+    updateTrailFromCursor(performance.now() / 1000);
   };
 
   const handlePointerDown = (event) => {
     cursor = cursorPositionToWorld(event, canvas);
+    updateTrailFromCursor(performance.now() / 1000);
+  };
+
+  function startTransition(event) {
+    if (event) cursor = cursorPositionToWorld(event, canvas);
     shockCenter = cursor;
     shockStartedAt = performance.now() / 1000;
-    const coverScale = getCoverTransform(canvas.clientWidth / Math.max(canvas.clientHeight, 1));
-    trail = updateMouseTrail(trail, screenPositionToScene(cursor, coverScale), shockStartedAt);
-  };
+    updateTrailFromCursor(shockStartedAt);
+  }
 
   canvas.addEventListener("pointermove", handlePointerMove);
   canvas.addEventListener("pointerdown", handlePointerDown);
@@ -524,8 +538,8 @@ export function initHeroWebgl(canvas) {
     const shock = computeShockState(shockStartedAt == null ? null : now - shockStartedAt);
     const trailUniforms = buildTrailUniforms(trail, now);
     const viewportAspect = canvas.width / Math.max(canvas.height, 1);
-    const coverScale = getCoverTransform(viewportAspect);
-    const sceneShockCenter = screenPositionToScene(shockCenter, coverScale);
+    const curtainScale = getCurtainTransform(viewportAspect);
+    const sceneShockCenter = screenPositionToScene(shockCenter, curtainScale);
     const pointScale = Math.max(0.72, Math.min(canvas.width / 1200, 1.45));
 
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -558,7 +572,7 @@ export function initHeroWebgl(canvas) {
       setUniform(gl, splatUniforms.shockStrength, (location) => gl.uniform1f(location, shock.shockStrength));
       setUniform(gl, splatUniforms.sceneZoom, (location) => gl.uniform1f(location, shock.sceneZoom));
       setUniform(gl, splatUniforms.blackTunnel, (location) => gl.uniform1f(location, shock.blackTunnel));
-      setUniform(gl, splatUniforms.sceneCoverScale, (location) => gl.uniform2fv(location, coverScale));
+      setUniform(gl, splatUniforms.sceneCoverScale, (location) => gl.uniform2fv(location, curtainScale));
       setUniform(gl, splatUniforms.trailCount, (location) => gl.uniform1i(location, trailUniforms.count));
       setUniform(gl, splatUniforms.trailMouse, (location) => gl.uniform2fv(location, trailUniforms.positions));
       setUniform(gl, splatUniforms.trailAge, (location) => gl.uniform1fv(location, trailUniforms.ages));
@@ -597,6 +611,7 @@ export function initHeroWebgl(canvas) {
   render();
 
   return {
+    startTransition,
     destroy() {
       disposed = true;
       cancelAnimationFrame(animationFrame);
