@@ -1667,36 +1667,9 @@ body[data-page="bead-curtain"] {
   line-height: 1;
 }
 
-.open-work-external-link.has-note {
-  min-height: 4.55rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.24rem;
-  padding: 0.62rem 1.08rem 0.66rem;
-}
-
-.open-work-external-link-label {
-  display: block;
-  line-height: 1;
-}
-
-.open-work-external-link-note {
-  display: block;
-  color: rgba(45, 45, 45, 0.58);
-  font-size: 0.72rem;
-  font-weight: 820;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
 .open-work-external-link:not(.is-disabled):hover {
   color: var(--editorial-paper);
   background: var(--editorial-ink);
-}
-
-.open-work-external-link:not(.is-disabled):hover .open-work-external-link-note {
-  color: rgba(251, 250, 247, 0.7);
 }
 
 .open-work-external-link.is-disabled {

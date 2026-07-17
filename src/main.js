@@ -190,18 +190,6 @@ function getExternalLinkAttributes(url) {
   return /^(https?:|mailto:)/i.test(url) ? ' target="_blank" rel="noreferrer"' : "";
 }
 
-function getOpenWorkExternalLinkNote(link) {
-  return link.url?.trim() === "/splatify-webapp" ? "PREVIEW ONLY" : "";
-}
-
-function renderOpenWorkExternalLinkContent(link) {
-  const note = getOpenWorkExternalLinkNote(link);
-  const noteMarkup = note
-    ? `<small class="open-work-external-link-note">${escapeHtml(note)}</small>`
-    : "";
-  return `<span class="open-work-external-link-label">${escapeHtml(link.label)}</span>${noteMarkup}`;
-}
-
 function groupGalleryMedia(items) {
   const grouped = new Map();
 
@@ -1098,22 +1086,20 @@ function renderOpenWorkPage(slug) {
   if (page) page.classList.toggle("has-open-work-media", Boolean(work.imageUrl));
 
   if (externalActions && externalLinks && externalNote) {
-    const links = openWorkExternalLinksBySlug[work.slug] ?? [];
-    externalActions.hidden = links.length === 0;
-    externalLinks.hidden = links.length === 0;
-    externalLinks.innerHTML = links
-      .map((link) => {
-        const safeUrl = getSafeOpenWorkExternalUrl(link.url);
-        const note = getOpenWorkExternalLinkNote(link);
-        const className = `open-work-external-link${note ? " has-note" : ""}`;
-        if (!safeUrl) {
-          return `<span class="${className} is-disabled" aria-disabled="true">${renderOpenWorkExternalLinkContent(link)}</span>`;
-        }
+        const links = openWorkExternalLinksBySlug[work.slug] ?? [];
+        externalActions.hidden = links.length === 0;
+        externalLinks.hidden = links.length === 0;
+        externalLinks.innerHTML = links
+          .map((link) => {
+            const safeUrl = getSafeOpenWorkExternalUrl(link.url);
+            if (!safeUrl) {
+              return `<span class="open-work-external-link is-disabled" aria-disabled="true">${escapeHtml(link.label)}</span>`;
+            }
 
-            const downloadAttribute = safeUrl.startsWith("/assets/downloads/") ? " download" : "";
-            const href = safeUrl.startsWith("/") ? toSitePath(safeUrl) : safeUrl;
-            return `<a class="${className}" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${renderOpenWorkExternalLinkContent(link)}</a>`;
-      })
+                const downloadAttribute = safeUrl.startsWith("/assets/downloads/") ? " download" : "";
+                const href = safeUrl.startsWith("/") ? toSitePath(safeUrl) : safeUrl;
+                return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
+          })
       .join("");
     externalNote.hidden = true;
     externalNote.replaceChildren();
