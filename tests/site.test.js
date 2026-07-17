@@ -863,7 +863,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkDetails, /ttalkkak-jangpyo,[^\n]*공사중/);
   assert.match(openWorkDetails, /ttalkkak-cleaning,[^\n]*공사중/);
   assert.doesNotMatch(openWorkDetails, /jeju-wave-radio,[^\n]*공사중/);
-  assert.match(openWorkDetails, /jeju-wave-radio,[^\n]*Preview ready/);
+  assert.match(openWorkDetails, /jeju-wave-radio,[^\n]*ON AIR/);
   assert.match(openWorkDetails, /JEJU WAVE RADIO는 제주 바닷가의 파도와 날씨를 실시간 분위기로 엮어내는 웹 라디오입니다/);
   assert.match(openWorkDetails, /실시간 자연 데이터\|앰비언스 사운드 맵핑\|8bit 비주얼 플레이어/);
   assert.match(openWorkDetails, /interactive-visuals,[^\n]*공사중/);
