@@ -25,6 +25,38 @@ test('site URL helpers preserve routes and assets below a GitHub Pages project b
   assert.equal(siteUrl.toPublicAssetUrl('/data/works.csv', '/kyutodaze.com/'), '/kyutodaze.com/data/works.csv');
 });
 
+test('Jeju Wave Radio is served as a local static web app', async () => {
+  const html = await readProjectFile('index.html');
+  const js = await readProjectFile('src/main.js');
+  const appHtml = await readProjectFile('public/apps/jeju-wave-radio/web/index.html');
+  const renderer = await readProjectFile('public/apps/jeju-wave-radio/web/src/renderer.js');
+  const videos = [
+    'sunny_day.mp4',
+    'sunny_night.mp4',
+    'cloudy_day.mp4',
+    'cloudy_night.mp4',
+    'rainy_day.mp4',
+    'rainy_night.mp4',
+  ];
+
+  assert.match(html, /data-jeju-wave-radio-frame/);
+  assert.match(html, /title="JEJU WAVE RADIO web app"/);
+  assert.match(html, /data-jeju-wave-radio-frame[^>]*allow="autoplay"/);
+  assert.match(js, /const JEJU_WAVE_RADIO_WEBAPP_PATH = "\/apps\/jeju-wave-radio\/web\/"/);
+  assert.match(js, /toPublicAssetUrl\(JEJU_WAVE_RADIO_WEBAPP_PATH\)/);
+  assert.match(js, /data-jeju-wave-radio-frame/);
+  assert.match(renderer, /\.\.\/assets\/video\/\$\{state\}\.mp4/);
+  assert.match(appHtml, /id="start-audio"/);
+  assert.match(appHtml, /id="refresh-live-data"/);
+
+  videos.forEach((file) => {
+    assert.ok(
+      statSync(new URL(`../public/apps/jeju-wave-radio/assets/video/${file}`, import.meta.url)).isFile(),
+      `expected local Jeju video ${file}`,
+    );
+  });
+});
+
 test('portfolio runtime resolves data, navigation, and Formspree feedback without a root-path assumption', async () => {
   const js = await readProjectFile('src/main.js');
 
