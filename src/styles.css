@@ -826,7 +826,29 @@ body[data-page="bead-curtain"] {
   }
 
   .bead-cursor {
-    display: none;
+    display: block;
+  }
+
+  .bead-cursor.is-visible {
+    --bead-cursor-x: 50vw;
+    --bead-cursor-y: 56vh;
+    opacity: 0.88;
+    animation: bead-cursor-mobile-float 1.8s ease-in-out infinite;
+  }
+
+  .bead-cursor.is-visible.has-position {
+    animation: none;
+  }
+}
+
+@keyframes bead-cursor-mobile-float {
+  0%,
+  100% {
+    transform: translate3d(calc(var(--bead-cursor-x) - 1.12rem), calc(var(--bead-cursor-y) - 0.72rem), 0) rotate(-6deg) translateY(0);
+  }
+
+  50% {
+    transform: translate3d(calc(var(--bead-cursor-x) - 1.12rem), calc(var(--bead-cursor-y) - 0.72rem), 0) rotate(-2deg) translateY(-0.42rem);
   }
 }
 

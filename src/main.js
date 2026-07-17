@@ -326,7 +326,6 @@ function ensureBeadCurtainHero() {
 
 function updateBeadCursorPosition(event) {
   if (!beadCursor || getRoute(window.location.pathname) !== "bead-curtain") return;
-  if ("pointerType" in event && event.pointerType === "touch") return;
 
   beadCursor.style.setProperty("--bead-cursor-x", `${event.clientX}px`);
   beadCursor.style.setProperty("--bead-cursor-y", `${event.clientY}px`);
@@ -335,7 +334,6 @@ function updateBeadCursorPosition(event) {
 
 function sparkleBeadCursor(event) {
   if (!beadCursor || getRoute(window.location.pathname) !== "bead-curtain") return;
-  if ("pointerType" in event && event.pointerType === "touch") return;
   if ("button" in event && event.button !== 0) return;
 
   updateBeadCursorPosition(event);
@@ -461,6 +459,7 @@ function enterHomeAfterBeadCurtain(event) {
   document.querySelector("[data-bead-curtain-webgl]")?.classList.add("is-entering");
   beadCurtainHero?.startTransition(event);
   ensureBeadCursor();
+  sparkleBeadCursor(event);
   beadCursor?.classList.add("is-whiteout");
 
   beadCurtainEnterTimer = window.setTimeout(() => {

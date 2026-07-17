@@ -589,6 +589,7 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(js, /BEAD_CURSOR_CLICK_MS/);
   assert.match(js, /beadCursor\??\.classList\.add\("is-whiteout"\)/);
   assert.match(js, /beadCursor\.classList\.remove\("is-whiteout",\s*"is-clicking"\)/);
+  assert.doesNotMatch(js, /if \("pointerType" in event && event\.pointerType === "touch"\) return;/);
   assert.match(js, /window\.addEventListener\(\s*"mousedown"/);
   assert.match(js, /const BEAD_CURTAIN_HOME_DELAY_MS = 2950;/);
   assert.match(js, /let beadCurtainTouchArmed = false;/);
@@ -618,6 +619,9 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(css, /animation:\s*bead-cursor-whiteout 2\.24s ease-in forwards;/);
   assert.match(css, /@keyframes bead-cursor-glitter/);
   assert.match(css, /@keyframes bead-cursor-whiteout/);
+  assert.match(css, /@media \(hover: none\), \(pointer: coarse\)\s*\{[\s\S]*?\.bead-cursor\s*\{\s*display: block;/);
+  assert.match(css, /\.bead-cursor\.is-visible\s*\{\s*--bead-cursor-x: 50vw;\s*--bead-cursor-y: 56vh;\s*opacity: 0\.88;\s*animation: bead-cursor-mobile-float 1\.8s ease-in-out infinite;/s);
+  assert.match(css, /@keyframes bead-cursor-mobile-float/);
   assert.ok(cursorAsset.byteLength > 10000);
   assert.doesNotMatch(html, /data-route="splatify"/);
   assert.doesNotMatch(js, /ensureSplatifyHero/);
