@@ -2938,7 +2938,7 @@ hr {
     font-weight: 690;
     letter-spacing: -0.022em;
     line-height: 1.16;
-    text-wrap: balance;
+    text-wrap: wrap;
   }
 
   .info-detail {
@@ -2948,7 +2948,7 @@ hr {
     line-height: 1.34;
     overflow-wrap: normal;
     word-break: keep-all;
-    text-wrap: pretty;
+    text-wrap: wrap;
   }
 
   .feed-media {
@@ -2989,15 +2989,28 @@ hr {
 
   .open-work-topbar {
     position: static;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1rem;
   }
 
   .open-work-nav {
-    max-width: 19rem;
+    max-width: none;
+    flex-wrap: nowrap;
+    gap: 0.35rem;
+  }
+
+  .open-work-nav a {
+    padding: 0.42rem 0.56rem 0.48rem;
+    font-size: 1.08rem;
+    white-space: nowrap;
   }
 
   .open-work-hero {
-    min-height: 34rem;
+    min-height: 28rem;
+    gap: 1rem;
   }
 
   .open-work-page.has-open-work-media .open-work-hero {
@@ -3087,7 +3100,10 @@ hr {
   }
 
   .open-work-feature {
-    min-height: 13rem;
+    min-height: 0;
+    align-content: start;
+    gap: 2.4rem;
+    padding: 1.1rem;
   }
 
   .open-work-example-media {
@@ -3107,6 +3123,13 @@ hr {
 
   .open-work-manual-step {
     grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 0.8rem;
+    align-items: start;
+  }
+
+  .open-work-manual-step > :nth-child(n + 3) {
+    grid-column: 2;
+    min-width: 0;
   }
 
   .open-work-manual-step p {
@@ -3116,6 +3139,25 @@ hr {
 
   .open-work-manual-note {
     grid-column: 2;
+    width: 100%;
+    gap: 0.9rem;
+    padding: 0.9rem;
+  }
+
+  .open-work-manual-rich,
+  .open-work-manual-table-wrap,
+  .open-work-manual-prompt,
+  .open-work-manual-code,
+  .open-work-manual-call-grid {
+    width: 100%;
+  }
+
+  .open-work-manual-call-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .open-work-manual-table {
+    min-width: 58rem;
   }
 
   .open-work-related-link {

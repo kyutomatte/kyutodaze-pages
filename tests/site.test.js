@@ -391,8 +391,8 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(html, /서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다/);
   assert.match(html, /Kyuto is a Seoul-based visual creative/i);
   assert.match(css, /\.info-section h1\s*\{[^}]*font-weight:\s*900;[^}]*letter-spacing:\s*-0\.035em;/s);
-  assert.match(css, /\.info-lede\s*\{[^}]*font-weight:\s*690;[^}]*text-wrap:\s*balance;/s);
-  assert.match(css, /\.info-detail\s*\{[^}]*word-break:\s*keep-all;[^}]*text-wrap:\s*pretty;/s);
+  assert.match(css, /\.info-lede\s*\{[^}]*font-weight:\s*690;[^}]*text-wrap:\s*wrap;/s);
+  assert.match(css, /\.info-detail\s*\{[^}]*word-break:\s*keep-all;[^}]*text-wrap:\s*wrap;/s);
   assert.doesNotMatch(html, /Kyuto creates atmospheric images/i);
   assert.doesNotMatch(html, /He works across artist visuals/i);
   assert.doesNotMatch(html, /We make/);
@@ -1189,6 +1189,10 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-manual-step/);
   assert.match(css, /\.open-work-manual-step\s*\{[^}]*align-items:\s*baseline;/s);
   assert.match(css, /\.open-work-manual-step p\s*\{[^}]*max-width:\s*none;/s);
+  assert.match(css, /\.open-work-manual-step\s*>\s*:nth-child\(n \+ 3\)\s*\{\s*grid-column:\s*2;/s);
+  assert.match(css, /\.open-work-nav\s*\{\s*max-width:\s*none;/s);
+  assert.match(css, /\.open-work-feature\s*\{\s*min-height:\s*0;\s*align-content:\s*start;/s);
+  assert.match(css, /\.info-lede\s*\{[^}]*text-wrap:\s*wrap;/s);
   assert.match(css, /\.open-work-related-link/);
   assert.doesNotMatch(css, /\.open-works-heading-link::after/);
   assert.match(css, /\.open-works-heading-link:hover\s*\{[^}]*color:\s*rgba\(45,\s*45,\s*45,\s*0\.68\);/s);
