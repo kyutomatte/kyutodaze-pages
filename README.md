@@ -16,6 +16,21 @@ npm test
 npm run build
 ```
 
+## JEJU WAVE RADIO
+
+`/jeju-wave-radio-webapp` loads the bundled app from
+`public/apps/jeju-wave-radio/web/`. Its six weather videos are in
+`public/apps/jeju-wave-radio/assets/video/`; preserve that layout because the
+WebGL renderer reads `../assets/video/`.
+
+The app requests public Open-Meteo weather, marine, and air-quality data in the
+visitor's browser. It falls back to its built-in demo values if requests fail,
+and starts audio only after the visitor presses `START AUDIO`.
+
+```bash
+node --test public/apps/jeju-wave-radio/web/tests/*.test.mjs
+```
+
 ## Feedback Delivery
 
 The published GitHub Pages build sends feedback automatically to
