@@ -38,7 +38,7 @@ const BEAD_CURTAIN_HOME_DELAY_MS = 2950;
 const BEAD_CURSOR_CLICK_MS = 720;
 const SPLATIFY_WEBAPP_URL = "https://kyutomatte.github.io/splatify-pre-release/";
 const JEJU_WAVE_RADIO_WEBAPP_PATH = "/apps/jeju-wave-radio/web/";
-const DATA_CACHE_VERSION = "2026-07-17-jeju-wave-radio-preview";
+const DATA_CACHE_VERSION = "2026-07-17-works-order";
 const FEEDBACK_RECIPIENT = "gray.ojat@gmail.com";
 const FEEDBACK_ENDPOINT = (import.meta.env?.VITE_FEEDBACK_ENDPOINT ?? "").trim();
 

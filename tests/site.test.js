@@ -398,7 +398,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /fetchCsv\("\/data\/works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/work-media\.csv"\)/);
-  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-jeju-wave-radio-preview"/);
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-works-order"/);
   assert.match(js, /url\.searchParams\.set\("v", DATA_CACHE_VERSION\)/);
   assert.match(js, /parseCsv/);
   assert.match(js, /getYouTubeEmbedUrl/);
