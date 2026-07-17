@@ -997,7 +997,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkExamples, /^\uFEFF?slug,kicker,title,media_url,media_type,caption,sort/m);
   assert.match(openWorkExamples, /jeju-wave-radio,Demo,JEJU WAVE RADIO demo,\/assets\/open-works\/jeju-wave-radio\/jeju-wave-radio-demo\.mp4,video,,1/);
   assert.match(openWorkExamples, /splatify,Example,Splatify demo,\/assets\/open-works\/splatify\/splatify-demo\.mov,video,,1/);
-  assert.match(openWorkExamples, /jebi-agent,Usage example,제비 요청 인식,\/assets\/open-works\/jebi-agent\/jebi-usage-example\.png,image,[^\n]*제비로 이사갈게요[^\n]*,1/);
+  assert.match(openWorkExamples, /jebi-agent,Usage example,제비 요청 인식,\/assets\/open-works\/jebi-agent\/jebi-usage-example\.png,image,"사용자가 제비로 이사갈게요라고 말하면\nJEBI 요청으로 인식하고 handoff 절차를 시작합니다\.",1/);
   assert.ok(statSync(new URL("../public/assets/open-works/jeju-wave-radio/jeju-wave-radio-demo.mp4", import.meta.url)).isFile());
   assert.ok(statSync(new URL("../public/assets/open-works/jebi-agent/jebi-usage-example.png", import.meta.url)).isFile());
 
@@ -1190,6 +1190,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(css, /\.open-work-manual-step\s*\{[^}]*align-items:\s*baseline;/s);
   assert.match(css, /\.open-work-manual-step\s*>\s*p\s*\{[^}]*grid-column:\s*2;[^}]*max-width:\s*none;/s);
   assert.doesNotMatch(css, /\.open-work-manual-step p\s*\{[^}]*grid-column:\s*2;/s);
+  assert.match(css, /\.open-work-example-media figcaption\s*\{[^}]*white-space:\s*pre-line;/s);
   assert.match(css, /\.open-work-manual-step\s*>\s*:nth-child\(n \+ 3\)\s*\{\s*grid-column:\s*2;/s);
   assert.match(css, /\.open-work-nav\s*\{\s*max-width:\s*none;/s);
   assert.match(css, /\.open-work-feature\s*\{\s*min-height:\s*0;\s*align-content:\s*start;/s);

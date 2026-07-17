@@ -1873,6 +1873,7 @@ body[data-page="bead-curtain"] {
   font-size: 1.08rem;
   font-weight: 620;
   line-height: 1.1;
+  white-space: pre-line;
 }
 
 .open-work-manual {
