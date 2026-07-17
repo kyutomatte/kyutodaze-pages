@@ -340,6 +340,7 @@ const vfx2026VideoOnlyFiles = [
 test("home page exposes the swapped Sebastian-style feed and info layout", async () => {
   const html = await readProjectFile("index.html");
   const js = await readProjectFile("src/main.js");
+  const css = await readProjectFile("src/styles.css");
 
   assert.match(html, /KYUTO\.MATTE/);
   assert.match(html, /id="top"/);
@@ -389,6 +390,9 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.doesNotMatch(html, /Hero thumbnail/);
   assert.match(html, /서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다/);
   assert.match(html, /Kyuto is a Seoul-based visual creative/i);
+  assert.match(css, /\.info-section h1\s*\{[^}]*font-weight:\s*900;[^}]*letter-spacing:\s*-0\.035em;/s);
+  assert.match(css, /\.info-lede\s*\{[^}]*font-weight:\s*690;[^}]*text-wrap:\s*balance;/s);
+  assert.match(css, /\.info-detail\s*\{[^}]*word-break:\s*keep-all;[^}]*text-wrap:\s*pretty;/s);
   assert.doesNotMatch(html, /Kyuto creates atmospheric images/i);
   assert.doesNotMatch(html, /He works across artist visuals/i);
   assert.doesNotMatch(html, /We make/);
