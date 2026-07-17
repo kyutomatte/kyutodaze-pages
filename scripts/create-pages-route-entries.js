@@ -7,6 +7,7 @@ export const fixedRouteDirectories = [
   "kyutomatte",
   "cargo",
   "open-works",
+  "jeju-wave-radio-webapp",
   "splatify-webapp",
   "splatify-webapp-export",
   "feedback"

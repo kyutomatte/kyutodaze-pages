@@ -1,3 +1,4 @@
 ﻿slug,kicker,title,media_url,media_type,caption,sort
+jeju-wave-radio,Demo,JEJU WAVE RADIO demo,/assets/open-works/jeju-wave-radio/jeju-wave-radio-demo.mp4,video,,1
 splatify,Example,Splatify demo,/assets/open-works/splatify/splatify-demo.mov,video,,1
 jebi-agent,Usage example,제비 요청 인식,/assets/open-works/jebi-agent/jebi-usage-example.png,image,사용자가 제비로 이사갈게요라고 말하면 JEBI 요청으로 인식하고 handoff 절차를 시작합니다.,1

@@ -44,6 +44,7 @@ test('Pages route entry generation includes fixed routes, CSV slugs, and aliases
     'kyutomatte',
     'cargo',
     'open-works',
+    'jeju-wave-radio-webapp',
     'splatify-webapp',
     'splatify-webapp-export',
     'feedback',
@@ -333,7 +334,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /fetchCsv\("\/data\/works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/work-media\.csv"\)/);
-  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-splatify-preview-button"/);
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-jeju-wave-radio-preview"/);
   assert.match(js, /url\.searchParams\.set\("v", DATA_CACHE_VERSION\)/);
   assert.match(js, /parseCsv/);
   assert.match(js, /getYouTubeEmbedUrl/);
@@ -861,7 +862,10 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkDetails, /ttalkkak-cleaning,Image review agent/);
   assert.match(openWorkDetails, /ttalkkak-jangpyo,[^\n]*공사중/);
   assert.match(openWorkDetails, /ttalkkak-cleaning,[^\n]*공사중/);
-  assert.match(openWorkDetails, /jeju-wave-radio,[^\n]*공사중/);
+  assert.doesNotMatch(openWorkDetails, /jeju-wave-radio,[^\n]*공사중/);
+  assert.match(openWorkDetails, /jeju-wave-radio,[^\n]*Preview ready/);
+  assert.match(openWorkDetails, /JEJU WAVE RADIO는 제주 바닷가의 파도와 날씨를 실시간 분위기로 엮어내는 웹 라디오입니다/);
+  assert.match(openWorkDetails, /실시간 자연 데이터\|앰비언스 사운드 맵핑\|8bit 비주얼 플레이어/);
   assert.match(openWorkDetails, /interactive-visuals,[^\n]*공사중/);
   assert.match(openWorkDetails, /조금만 기다려주세요/);
   assert.match(openWorkDetails, /응원의 메시지 보내기/);
@@ -872,14 +876,17 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorkLinks, /sleepless,Github 페이지 연결,https:\/\/github\.com\/kyutomatte\/sleepless\/,1/);
   assert.match(openWorkLinks, /sleepless,MAC OS용 다운로드,\/assets\/downloads\/sleepless\/Sleepless_0\.1\.2_aarch64\.dmg,2/);
   assert.match(openWorkLinks, /splatify,Web App\(beta\) 이용하기,\/splatify-webapp,1/);
+  assert.match(openWorkLinks, /jeju-wave-radio,Web App 이용하기,\/jeju-wave-radio-webapp,1/);
   assert.match(openWorkLinks, /ffmochi,GitHub 페이지 연결,https:\/\/github\.com\/kyutomatte\/ffMOCHI,1/);
   assert.match(openWorkLinks, /ffmochi,MAC OS용 다운로드,\/assets\/downloads\/ffmochi\/ffMOCHI-local\.dmg,2/);
   assert.match(openWorkLinks, /jebi-agent,Github 페이지 연결,https:\/\/github\.com\/kyutomatte\/jebi_agent,1/);
   assert.doesNotMatch(openWorkLinks, /jebi-agent,README 읽기/);
 
   assert.match(openWorkExamples, /^\uFEFF?slug,kicker,title,media_url,media_type,caption,sort/m);
+  assert.match(openWorkExamples, /jeju-wave-radio,Demo,JEJU WAVE RADIO demo,\/assets\/open-works\/jeju-wave-radio\/jeju-wave-radio-demo\.mp4,video,,1/);
   assert.match(openWorkExamples, /splatify,Example,Splatify demo,\/assets\/open-works\/splatify\/splatify-demo\.mov,video,,1/);
   assert.match(openWorkExamples, /jebi-agent,Usage example,제비 요청 인식,\/assets\/open-works\/jebi-agent\/jebi-usage-example\.png,image,[^\n]*제비로 이사갈게요[^\n]*,1/);
+  assert.ok(statSync(new URL("../public/assets/open-works/jeju-wave-radio/jeju-wave-radio-demo.mp4", import.meta.url)).isFile());
   assert.ok(statSync(new URL("../public/assets/open-works/jebi-agent/jebi-usage-example.png", import.meta.url)).isFile());
 
   assert.match(openWorkManuals, /^\uFEFF?slug,section_title,step_title,body,sort/m);
@@ -965,6 +972,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /data-splatify-webapp-frame/);
   assert.match(html, /data-route="splatify-webapp-export"/);
   assert.match(html, /data-splatify-export-frame/);
+  assert.match(html, /data-route="jeju-wave-radio-webapp"/);
+  assert.match(html, /JEJU WAVE RADIO WEB APP/);
   assert.match(html, /data-route="feedback"/);
   assert.match(html, /data-feedback-form/);
   assert.match(html, /data-feedback-status/);
@@ -999,6 +1008,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(js, /getOpenWorkExamples/);
   assert.match(js, /SPLATIFY_WEBAPP_URL/);
   assert.match(js, /syncSplatifyWebappFrames/);
+  assert.match(js, /"jeju-wave-radio-webapp"/);
   assert.match(js, /externalNote/);
   assert.doesNotMatch(js, /openWorkEmbedsBySlug/);
   assert.match(js, /openWorkManualsBySlug/);
@@ -1026,6 +1036,7 @@ test("open works have shared landing pages and routes", async () => {
 
   assert.match(css, /body\[data-page="open-work"\]/);
   assert.match(css, /body\[data-page="open-works"\]/);
+  assert.match(css, /body\[data-page="jeju-wave-radio-webapp"\]/);
   assert.match(css, /body\[data-page="feedback"\]/);
   assert.match(css, /\.open-work-page/);
   assert.match(css, /\.open-work-hero/);
