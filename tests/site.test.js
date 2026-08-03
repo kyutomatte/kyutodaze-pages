@@ -62,6 +62,7 @@ test('Jeju Wave Radio is served as a local static web app', async () => {
   const js = await readProjectFile('src/main.js');
   const appHtml = await readProjectFile('public/apps/jeju-wave-radio/web/index.html');
   const appStyles = await readProjectFile('public/apps/jeju-wave-radio/web/styles.css');
+  const app = await readProjectFile('public/apps/jeju-wave-radio/web/src/app.js');
   const renderer = await readProjectFile('public/apps/jeju-wave-radio/web/src/renderer.js');
   const videos = [
     'sunny_day.mp4',
@@ -83,6 +84,10 @@ test('Jeju Wave Radio is served as a local static web app', async () => {
   assert.match(appHtml, /id="refresh-live-data"/);
   assert.match(appStyles, /url\("\.\.\/\.\.\/\.\.\/assets\/Cargo-DiatypePlusVariable\.woff2"\)/);
   assert.doesNotMatch(appStyles, /https:\/\/kyutomatte\.github\.io\/kyutodaze-pages\/assets\/Cargo-DiatypePlusVariable\.woff2/);
+  assert.match(appStyles, /\.data-meter-fill\s*\{[^}]*transform:\s*scaleX\(0\);[^}]*transition:\s*transform\s+\.24s/s);
+  assert.doesNotMatch(appStyles, /\.data-meter-fill\s*\{[^}]*transition:\s*width/s);
+  assert.match(app, /fill\.style\.transform\s*=\s*`scaleX\(\$\{amount \/ 100\}\)`;/);
+  assert.doesNotMatch(app, /fill\.style\.width\s*=/);
 
   videos.forEach((file) => {
     assert.ok(
@@ -416,7 +421,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /item\.type === "video"/);
   assert.match(js, /item\.type === "still"/);
   assert.match(js, /url\.pathname === "\/watch"/);
-  assert.match(js, /data-overview-featured/);
+  assert.doesNotMatch(js, /data-overview-featured/);
   assert.match(js, /renderWorks/);
   assert.match(js, /renderOpenWorks/);
   assert.match(js, /setWorkView/);
@@ -456,6 +461,10 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /data-category-filter/);
   assert.match(js, /extractEmbeddableUrl/);
   assert.doesNotMatch(js, /data-view-panel="feed"/);
+  assert.doesNotMatch(js, /function renderWorkEntry\(/);
+  assert.doesNotMatch(js, /function renderWorkGroups\(/);
+  assert.doesNotMatch(js, /function getSplatifyExportUrl\(/);
+  assert.doesNotMatch(js, /window\.addEventListener\(\s*"mousedown"/s);
   assert.match(js, /data-gallery-work-id/);
   assert.match(js, /function restoreSheetLeadingQuote\(value\)/);
   assert.match(js, /if \(\/\^\[‘’'“”\]\/\.test\(text\)\) return text;/);
@@ -593,7 +602,8 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(js, /beadCursor\??\.classList\.add\("is-whiteout"\)/);
   assert.match(js, /beadCursor\.classList\.remove\("is-whiteout",\s*"is-clicking"\)/);
   assert.doesNotMatch(js, /if \("pointerType" in event && event\.pointerType === "touch"\) return;/);
-  assert.match(js, /window\.addEventListener\(\s*"mousedown"/);
+  assert.match(js, /window\.addEventListener\(\s*"pointerdown"/);
+  assert.doesNotMatch(js, /window\.addEventListener\(\s*"mousedown"/);
   assert.match(js, /const BEAD_CURTAIN_HOME_DELAY_MS = 2950;/);
   assert.match(js, /let beadCurtainTouchArmed = false;/);
   assert.match(js, /let beadCurtainEntering = false;/);
@@ -619,12 +629,12 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
   assert.match(css, /\.bead-cursor\.is-clicking::before\s*\{[^}]*animation:\s*bead-cursor-glitter 720ms ease-out;/s);
   assert.match(css, /\.bead-cursor\.is-clicking::after\s*\{[^}]*animation:\s*bead-cursor-spark 720ms ease-out;/s);
   assert.match(css, /\.bead-cursor\.is-whiteout\s*\{/);
-  assert.match(css, /animation:\s*bead-cursor-whiteout 2\.24s ease-in forwards;/);
+  assert.match(css, /animation:\s*bead-cursor-whiteout 2\.24s var\(--ease-out\) forwards;/);
   assert.match(css, /@keyframes bead-cursor-glitter/);
   assert.match(css, /@keyframes bead-cursor-whiteout/);
   assert.match(css, /@media \(hover: none\), \(pointer: coarse\)\s*\{[\s\S]*?\.bead-cursor\s*\{\s*display: block;/);
   assert.match(css, /\.bead-cursor\.is-visible\s*\{\s*--bead-cursor-x: 50vw;\s*--bead-cursor-y: 56vh;\s*opacity: 0\.88;\s*animation: bead-cursor-mobile-float 1\.8s ease-in-out infinite;/s);
-  assert.match(css, /\.bead-cursor\.is-visible\.is-whiteout\s*\{\s*animation: bead-cursor-whiteout 2\.24s ease-in forwards;/s);
+  assert.match(css, /\.bead-cursor\.is-visible\.is-whiteout\s*\{\s*animation: bead-cursor-whiteout 2\.24s var\(--ease-out\) forwards;/s);
   assert.match(css, /@keyframes bead-cursor-mobile-float/);
   assert.ok(cursorAsset.byteLength > 10000);
   assert.doesNotMatch(html, /data-route="splatify"/);
@@ -1289,20 +1299,13 @@ test("new portfolio stylesheet uses swapped two-column editorial feed layout", a
   assert.match(css, /\.summary-work-group\[data-summary-expanded="true"\]\s+\.summary-group-body\s*\{/);
   assert.match(css, /\.overview-stills-grid\s*\{/);
   assert.match(css, /\.overview-still-button\s*\{/);
-  assert.match(css, /\[data-view-panel\]\s*\{[^}]*max-height:\s*0;/s);
-  assert.match(css, /\.new-home-page\[data-work-view="summary"\]\s+\[data-view-panel="summary"\]/);
-  assert.match(css, /\.new-home-page\[data-work-view="overview"\]\s+\[data-view-panel="overview"\]/);
-  assert.match(
-    css,
-    /\.new-home-page\[data-work-view="summary"\]\s+\[data-view-panel="summary"\],\s*\.new-home-page\[data-work-view="overview"\]\s+\[data-view-panel="overview"\]\s*\{[^}]*max-height:\s*none;[^}]*overflow:\s*visible;/s
-  );
-  assert.match(css, /\.summary-group-body\s*\{[^}]*transition:\s*max-height/s);
-  assert.match(
-    css,
-    /\.summary-work-group\[data-summary-expanded="true"\]\s+\.summary-group-body\s*\{[^}]*max-height:\s*none;[^}]*overflow:\s*visible;/s
-  );
-  assert.match(css, /\.feed-work-group\s*\{[^}]*max-height:\s*none;[^}]*overflow:\s*visible;/s);
-  assert.match(css, /\.feed-entry\s*\{[^}]*max-height:\s*none;[^}]*overflow:\s*visible;/s);
+  assert.doesNotMatch(css, /\[data-view-panel\]/);
+  assert.doesNotMatch(css, /\.feed-work-group/);
+  assert.doesNotMatch(css, /\.feed-entry/);
+  assert.match(css, /--ease-out:\s*cubic-bezier\(0\.23,\s*1,\s*0\.32,\s*1\);/);
+  assert.match(css, /\.open-work-hero\s*\{[^}]*min-height:\s*clamp\(32rem,\s*40vh,\s*38rem\);/s);
+  assert.match(css, /\.open-work-page\.has-open-work-media\s+\.open-work-hero\s*\{[^}]*min-height:\s*48rem;/s);
+  assert.match(css, /:is\([^)]*\.top-link[^)]*\):active\s*\{[^}]*transform:\s*scale\(0\.97\);/s);
   assert.match(css, /\.gallery-lightbox\s*\{/);
   assert.match(css, /\.gallery-lightbox\.is-open\s*\{/);
   assert.match(css, /\.gallery-stage\s*\{/);

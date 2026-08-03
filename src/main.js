@@ -364,11 +364,6 @@ function ensureBeadCursor() {
     { passive: true }
   );
 
-  window.addEventListener(
-    "mousedown",
-    (event) => sparkleBeadCursor(event),
-    { passive: true }
-  );
 }
 
 function syncBeadCursor(route) {
@@ -377,10 +372,6 @@ function syncBeadCursor(route) {
   const isBeadCurtain = route === "bead-curtain";
   beadCursor.classList.toggle("is-visible", isBeadCurtain);
   if (!isBeadCurtain) beadCursor.classList.remove("is-whiteout", "is-clicking");
-}
-
-function getSplatifyExportUrl() {
-  return SPLATIFY_WEBAPP_URL;
 }
 
 function syncSplatifyWebappFrames(route) {
@@ -398,7 +389,7 @@ function syncSplatifyWebappFrames(route) {
 
   if (exportFrame) {
     if (route === "splatify-webapp-export") {
-      exportFrame.src = getSplatifyExportUrl();
+      exportFrame.src = SPLATIFY_WEBAPP_URL;
     } else {
       exportFrame.removeAttribute("src");
     }
@@ -666,49 +657,6 @@ function renderMedia(work, mediaByWorkId) {
   return `<a class="feed-link-card feed-text-link" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">Open link</a>`;
 }
 
-function renderWorkEntry(work, index = 0, mediaByWorkId = new Map()) {
-  const overview = isOverviewWork(work);
-  const groupContinuation = index > 0;
-  const workText = restoreSheetLeadingQuote(work.text);
-
-  return `
-    <article class="feed-entry"${overview ? ' data-overview-featured="true"' : ""}${groupContinuation ? ' data-group-continuation="true"' : ""}>
-      <header class="feed-entry-header">
-        <h2>${escapeHtml(work.artist)}</h2>
-        <p>${escapeHtml(work.category)}</p>
-        <p>${escapeHtml(work.year)}</p>
-      </header>
-      <div class="feed-media">${renderMedia(work, mediaByWorkId)}</div>
-      <p class="feed-copy">${escapeHtml(workText)}</p>
-    </article>
-  `;
-}
-
-function renderWorkGroups(works, mediaByWorkId = new Map()) {
-  const groups = [];
-
-  for (const work of works) {
-    const currentGroup = groups[groups.length - 1];
-    if (currentGroup?.artist === work.artist) {
-      currentGroup.items.push(work);
-    } else {
-      groups.push({ artist: work.artist, items: [work] });
-    }
-  }
-
-  return groups
-    .map((group) => {
-      const overview = group.items.some((work) => isOverviewWork(work));
-
-      return `
-        <section class="feed-work-group"${overview ? ' data-overview-featured="true"' : ""}>
-          ${group.items.map((work, index) => renderWorkEntry(work, index, mediaByWorkId)).join("")}
-        </section>
-      `;
-    })
-    .join("");
-}
-
 function renderSummaryWorkRows(works, mediaByWorkId) {
   return `
     <ul class="summary-detail-list">
@@ -746,7 +694,7 @@ function renderSummaryGroups(works, mediaByWorkId = new Map()) {
   }
 
   return `
-    <div class="summary-list" data-view-panel="summary">
+    <div class="summary-list">
       ${groups
         .map((group) => {
           const expanded = activeSummaryArtist === group.artist;
@@ -773,7 +721,7 @@ function renderOverviewGrid(works, mediaByWorkId = new Map()) {
   const stillItems = getOverviewStillItems(works, mediaByWorkId);
 
   return `
-    <div class="overview-stills-grid" data-view-panel="overview">
+    <div class="overview-stills-grid">
       ${stillItems
         .map(
           ({ work, item }) => `

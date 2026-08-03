@@ -229,10 +229,12 @@ input[type="range"] {
 
 .data-meter-fill {
   display: block;
-  width: 0%;
+  width: 100%;
   height: 100%;
   background: var(--meter);
-  transition: width .24s ease;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .24s ease;
 }
 
 .meter-readout {

@@ -26,7 +26,7 @@ async function renderState(state) {
 function updateDataMeters() {
   instrumentMeters.forEach(({ fill, current, instrument }) => {
     const amount = Math.round(Math.min(1, Math.max(0, Number(payload.values[instrument.key]) || 0)) * 100);
-    fill.style.width = `${amount}%`;
+    fill.style.transform = `scaleX(${amount / 100})`;
     current.textContent = String(amount);
   });
 }
