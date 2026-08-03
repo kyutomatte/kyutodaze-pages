@@ -1513,7 +1513,6 @@ body[data-page="bead-curtain"] {
   outline-offset: 2px;
 }
 
-.bead-curtain-page > .language-switcher,
 .kyutomatte-language-header .language-switcher,
 .marquee-strip > .language-switcher {
   position: absolute;
@@ -3016,7 +3015,6 @@ hr {
     font-size: 1rem;
   }
 
-  .bead-curtain-page > .language-switcher,
   .kyutomatte-language-header .language-switcher,
   .marquee-strip > .language-switcher {
     top: 0.8rem;
