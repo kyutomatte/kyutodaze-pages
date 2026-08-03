@@ -225,7 +225,7 @@ const translations = {
     "jejuWave.webAppLabel": "JEJU WAVE RADIO 웹 앱",
     "feedback.navigation": "피드백 내비게이션",
     "inquiries.navigation": "문의 내비게이션",
-    "inquiries.kicker": "Contact",
+    "inquiries.kicker": "문의",
     "inquiries.title": "문의",
     "inquiries.intro": "프로젝트, 협업, 기타 문의를 남겨주세요.",
     "inquiries.message": "메시지",
