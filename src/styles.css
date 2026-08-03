@@ -1313,7 +1313,7 @@ body[data-page="bead-curtain"] {
 
 .home-copy-block {
   display: grid;
-  gap: 1.3rem;
+  gap: 1rem;
 }
 
 .home-copy-block p {
@@ -1332,6 +1332,23 @@ body[data-page="bead-curtain"] {
   font-size: 1.45rem;
   font-weight: 440;
   line-height: 1.24;
+}
+
+.home-copy-block .info-specialty {
+  margin-top: 0.25rem;
+  color: rgba(45, 45, 45, 0.58);
+  font-size: 1.08rem;
+  font-weight: 720;
+  letter-spacing: 0.055em;
+  line-height: 1.2;
+}
+
+.info-specialty-line {
+  display: block;
+}
+
+.info-specialty-line + .info-specialty-line {
+  margin-top: 0.16rem;
 }
 
 .contact-card {
@@ -1451,6 +1468,64 @@ body[data-page="bead-curtain"] {
   border-bottom: 1px solid var(--editorial-rule);
   padding: 1rem;
   background: rgba(251, 250, 247, 0.94);
+}
+
+.language-switcher {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.12rem;
+  border: 1px solid currentColor;
+  border-radius: 999rem;
+  padding: 0.14rem;
+  background: transparent;
+  color: inherit;
+  line-height: 1;
+}
+
+.language-switcher button {
+  display: inline-flex;
+  min-width: 2.7rem;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999rem;
+  padding: 0.25rem 0.4rem;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.08rem;
+  font-weight: 740;
+  letter-spacing: 0;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.language-switcher button[aria-pressed="true"] {
+  background: #111;
+  color: #fff;
+}
+
+.language-switcher button:hover:not([aria-pressed="true"]) {
+  background: rgba(17, 17, 17, 0.1);
+}
+
+.language-switcher button:focus-visible {
+  outline: 2px solid #ff4b00;
+  outline-offset: 2px;
+}
+
+.bead-curtain-page > .language-switcher,
+.kyutomatte-language-header .language-switcher,
+.marquee-strip > .language-switcher {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  z-index: 7;
+  background: #fff;
+  color: #000;
 }
 
 .open-work-nav {
@@ -2185,12 +2260,14 @@ body[data-page="bead-curtain"] {
 
 .open-work-index-link p {
   grid-column: 2;
+  max-inline-size: 58ch;
   margin: 0;
   color: rgba(45, 45, 45, 0.68);
   font-size: 1.18rem;
   font-weight: 620;
   line-height: 1.15;
   white-space: pre-line;
+  text-wrap: balance;
   word-break: keep-all;
 }
 
@@ -2834,7 +2911,7 @@ hr {
   }
 
   .home-copy-block {
-    gap: 1.75rem;
+    gap: 1.15rem;
   }
 
   .info-lede {
@@ -2904,6 +2981,24 @@ hr {
     padding: 0.42rem 0.56rem 0.48rem;
     font-size: 1.08rem;
     white-space: nowrap;
+  }
+
+  .language-switcher {
+    padding: 0.1rem;
+  }
+
+  .language-switcher button {
+    min-width: 2.3rem;
+    min-height: 2.3rem;
+    padding: 0.2rem 0.3rem;
+    font-size: 1rem;
+  }
+
+  .bead-curtain-page > .language-switcher,
+  .kyutomatte-language-header .language-switcher,
+  .marquee-strip > .language-switcher {
+    top: 0.8rem;
+    right: 0.8rem;
   }
 
   .open-work-hero {

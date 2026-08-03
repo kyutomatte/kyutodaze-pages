@@ -1,5 +1,5 @@
-﻿slug,kicker,title,media_url,media_type,caption,sort
-jeju-wave-radio,Demo,JEJU WAVE RADIO demo,/assets/open-works/jeju-wave-radio/jeju-wave-radio-demo.mp4,video,,1
-splatify,Example,Splatify demo,/assets/open-works/splatify/splatify-demo.mov,video,,1
-jebi-agent,Usage example,제비 요청 인식,/assets/open-works/jebi-agent/jebi-usage-example.png,image,"사용자가 제비로 이사갈게요라고 말하면
-JEBI 요청으로 인식하고 handoff 절차를 시작합니다.",1
+﻿slug,kicker,kicker_en,title,title_en,media_url,media_type,caption,caption_en,sort
+jeju-wave-radio,Demo,Demo,JEJU WAVE RADIO demo,JEJU WAVE RADIO demo,/assets/open-works/jeju-wave-radio/jeju-wave-radio-demo.mp4,video,,,1
+splatify,Example,Example,Splatify demo,Splatify demo,/assets/open-works/splatify/splatify-demo.mov,video,,,1
+jebi-agent,Usage example,Usage example,제비 요청 인식,Recognizing a JEBI request,/assets/open-works/jebi-agent/jebi-usage-example.png,image,"사용자가 제비로 이사갈게요라고 말하면
+JEBI 요청으로 인식하고 handoff 절차를 시작합니다.","When the user says they want to move with JEBI, the agent recognizes it as a JEBI request and begins the handoff process.",1

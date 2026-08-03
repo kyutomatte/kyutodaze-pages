@@ -12,64 +12,70 @@
     <main class="route-page new-home-page" id="home" data-route="home" data-work-view="summary">
       <span id="top" aria-hidden="true"></span>
       <div class="home-shell">
-        <section class="home-feed-panel" id="feed" aria-label="Works">
+        <section class="home-feed-panel" id="feed" aria-label="Works" data-i18n-aria-label="home.works">
           <header class="panel-bar feed-bar">
-            <div class="work-view-switch" role="group" aria-label="Work view">
+            <div class="work-view-switch" role="group" aria-label="Work view" data-i18n-aria-label="home.workView">
               <button class="work-view-button" type="button" data-view-toggle="summary" aria-pressed="true">
                 <span class="work-view-icon work-view-icon-list" aria-hidden="true"></span>
-                <span>Summary</span>
+                <span data-i18n="view.summary">Summary</span>
               </button>
               <button class="work-view-button" type="button" data-view-toggle="overview" aria-pressed="false">
                 <span class="work-view-icon work-view-icon-grid" aria-hidden="true"></span>
-                <span>Overview</span>
+                <span data-i18n="view.overview">Overview</span>
               </button>
             </div>
-            <div class="category-filter" role="group" aria-label="Category filter">
-              <button class="category-filter-button" type="button" data-category-filter="mv" aria-pressed="false">M/V</button>
-              <button class="category-filter-button" type="button" data-category-filter="album" aria-pressed="false">Album</button>
-              <button class="category-filter-button" type="button" data-category-filter="graphic" aria-pressed="false">Graphic</button>
-              <button class="category-filter-button" type="button" data-category-filter="fashion" aria-pressed="false">Fashion</button>
-              <button class="category-filter-button" type="button" data-category-filter="ai3d" aria-pressed="false">AI/3D</button>
+            <div class="category-filter" role="group" aria-label="Category filter" data-i18n-aria-label="home.categoryFilter">
+              <button class="category-filter-button" type="button" data-category-filter="mv" aria-pressed="false" data-i18n="taxonomy.mv">M/V</button>
+              <button class="category-filter-button" type="button" data-category-filter="album" aria-pressed="false" data-i18n="taxonomy.album">Album</button>
+              <button class="category-filter-button" type="button" data-category-filter="graphic" aria-pressed="false" data-i18n="taxonomy.graphic">Graphic</button>
+              <button class="category-filter-button" type="button" data-category-filter="fashion" aria-pressed="false" data-i18n="taxonomy.fashion">Fashion</button>
+              <button class="category-filter-button" type="button" data-category-filter="ai3d" aria-pressed="false" data-i18n="taxonomy.ai3d">AI/3D</button>
             </div>
           </header>
 
           <div class="works-list" data-works-list aria-live="polite">
-            <p class="loading-copy">Loading works...</p>
+            <p class="loading-copy" data-i18n="home.loadingWorks">Loading works...</p>
           </div>
         </section>
 
-        <aside class="home-info-panel" id="information" aria-label="Information">
+        <aside class="home-info-panel" id="information" aria-label="Information" data-i18n-aria-label="home.information">
           <header class="panel-bar info-bar">
-            <button class="logo-mark" type="button" data-home-reset aria-label="Reset home view">
+            <button class="logo-mark" type="button" data-home-reset aria-label="Reset home view" data-i18n-aria-label="home.reset">
               <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
             </button>
-            <a class="top-link" href="#top" data-scroll-top>Top</a>
+            <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+              <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+              <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+            </div>
+            <a class="top-link" href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
           </header>
 
-          <section class="info-section" id="overview" aria-label="Overview">
+          <section class="info-section" id="overview" aria-label="Overview" data-i18n-aria-label="home.overview">
             <h1>KYUTO.MATTE</h1>
             <div class="home-copy-block">
-              <p class="info-lede">
-                Kyuto is a Seoul-based visual creative working across artist visuals, 3D,
-                AI-generated imagery, moving image, and experimental visual direction.
+              <p class="info-lede" data-home-lead data-i18n="home.lead">
+                VISUAL CREATIVE FOR ARTISTS &amp; PRODUCT BRANDS
               </p>
-              <p class="info-detail">
-                서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.
-                3D, AI 이미지·영상, 모션 그래픽, 실험적인 비주얼 디렉션을 중심으로
-                감각적인 이미지를 설계하고 확장합니다.
+              <p class="info-detail" data-home-practice data-i18n="home.practice">
+                The portfolio creates visual creative for artists and product brands across 3D,
+                AI image/video, motion, and communication design, and develops apps and agents that extend the work.
+              </p>
+              <p class="info-specialty" data-home-specialty>
+                <span class="info-specialty-line" data-i18n="home.specialty.line1">VISUAL CREATIVE · 3D · AI IMAGE/VIDEO</span>
+                <span class="info-specialty-line" data-i18n="home.specialty.line2">MOTION · COMMUNICATION DESIGN · APPS &amp; AGENTS</span>
               </p>
             </div>
-            <div class="contact-card" aria-label="Contact">
-              <p>Contact</p>
-              <span class="contact-link contact-link-static" aria-label="Email address">gray.ojat@gmail.com</span>
+            <div class="contact-card" aria-label="Contact" data-i18n-aria-label="home.contact">
+              <p data-i18n="home.contact">Contact</p>
+              <span class="contact-link contact-link-static" aria-label="Email address" data-i18n-aria-label="home.emailAddress">gray.ojat@gmail.com</span>
               <a class="contact-link" href="https://www.instagram.com/kyuto.matte" target="_blank" rel="noreferrer">@kyuto.matte</a>
             </div>
           </section>
 
-          <section class="open-works" aria-label="Open works">
-            <h2><a class="open-works-heading-link" href="%BASE_URL%open-works">Open works</a></h2>
+          <section class="open-works" aria-label="Open works" data-i18n-aria-label="navigation.openWorks">
+            <h2><a class="open-works-heading-link" href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a></h2>
             <div class="open-works-list" data-open-works-list aria-live="polite">
-              <p class="loading-copy">Loading open works...</p>
+              <p class="loading-copy" data-i18n="openWorks.loading">Loading open works...</p>
             </div>
           </section>
         </aside>
@@ -77,19 +83,27 @@
     </main>
 
     <main class="route-page bead-curtain-page" id="bead-curtain" data-route="bead-curtain" hidden>
-      <canvas class="bead-curtain-canvas" data-bead-curtain-webgl aria-label="Full-page interactive bead curtain"></canvas>
+      <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+        <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+        <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+      </div>
+      <canvas class="bead-curtain-canvas" data-bead-curtain-webgl aria-label="Full-page interactive bead curtain" data-i18n-aria-label="beadCurtain.label"></canvas>
       <div class="bead-cursor" data-bead-cursor aria-hidden="true"></div>
     </main>
 
     <main class="route-page open-work-page" id="open-work" data-route="open-work" data-open-work-page hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="Open work navigation">
-          <a href="%BASE_URL%home">Home</a>
-          <a href="%BASE_URL%open-works">Open works</a>
-          <a href="#top" data-scroll-top>Top</a>
+        <nav class="open-work-nav" aria-label="Open work navigation" data-i18n-aria-label="openWork.navigation">
+          <a href="%BASE_URL%home" data-i18n="navigation.home">Home</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
 
@@ -98,12 +112,12 @@
           <figure class="open-work-media" data-open-work-media hidden>
             <img data-open-work-image alt="" />
           </figure>
-          <p class="open-work-kicker" data-open-work-kicker>Open work</p>
-          <h1 id="open-work-title" data-open-work-title>Open work</h1>
+          <p class="open-work-kicker" data-open-work-kicker data-i18n="openWork.label">Open work</p>
+          <h1 id="open-work-title" data-open-work-title data-i18n="openWork.label">Open work</h1>
           <p class="open-work-summary" data-open-work-summary></p>
           <div class="open-work-actions">
-            <a class="open-work-primary-action" href="%BASE_URL%feedback" data-open-work-action>피드백 작성하기</a>
-            <a class="open-work-secondary-action" href="%BASE_URL%open-works">목록으로</a>
+            <a class="open-work-primary-action" href="%BASE_URL%feedback" data-open-work-action data-i18n="navigation.feedback">Feedback</a>
+            <a class="open-work-secondary-action" href="%BASE_URL%open-works" data-i18n="openWork.backToList">목록으로</a>
           </div>
           <div class="open-work-external-actions" data-open-work-external-actions hidden>
             <div class="open-work-external-links" data-open-work-external-links hidden></div>
@@ -111,22 +125,22 @@
           </div>
         </section>
 
-        <section class="open-work-brief" aria-label="Project brief">
+        <section class="open-work-brief" aria-label="Project brief" data-i18n-aria-label="openWork.brief">
           <div>
-            <span>Format</span>
+            <span data-i18n="openWork.format">Format</span>
             <strong data-open-work-format></strong>
           </div>
           <div>
-            <span>Status</span>
+            <span data-i18n="openWork.status">Status</span>
             <strong data-open-work-status></strong>
           </div>
           <div>
-            <span>Role</span>
+            <span data-i18n="openWork.role">Role</span>
             <strong data-open-work-role></strong>
           </div>
         </section>
 
-        <section class="open-work-body" aria-label="Open work details">
+        <section class="open-work-body" aria-label="Open work details" data-i18n-aria-label="openWork.detailsSection">
           <div class="open-work-copy">
             <p data-open-work-lede></p>
             <p data-open-work-detail></p>
@@ -134,24 +148,24 @@
           <div class="open-work-feature-grid" data-open-work-features></div>
         </section>
 
-        <section class="open-work-example" data-open-work-example aria-label="Open work example" hidden>
+        <section class="open-work-example" data-open-work-example aria-label="Open work example" data-i18n-aria-label="openWork.exampleSection" hidden>
           <div class="open-work-example-heading">
-            <span data-open-work-example-kicker>Example</span>
-            <h2 data-open-work-example-title>Example</h2>
+            <span data-open-work-example-kicker data-i18n="openWork.example">Example</span>
+            <h2 data-open-work-example-title data-i18n="openWork.example">Example</h2>
           </div>
           <div class="open-work-example-media" data-open-work-example-media></div>
         </section>
 
-        <section class="open-work-manual" data-open-work-manual aria-label="Open work manual" hidden>
+        <section class="open-work-manual" data-open-work-manual aria-label="Open work manual" data-i18n-aria-label="openWork.manualSection" hidden>
           <div class="open-work-manual-heading">
-            <span>Manual</span>
-            <h2 data-open-work-manual-title>사용 설명서</h2>
+            <span data-i18n="openWork.manual">Manual</span>
+            <h2 data-open-work-manual-title data-i18n="openWork.manual">Manual</h2>
           </div>
           <div class="open-work-manual-steps" data-open-work-manual-steps></div>
         </section>
 
-        <section class="open-work-related" aria-label="Related open works">
-          <h2>More open works</h2>
+        <section class="open-work-related" aria-label="Related open works" data-i18n-aria-label="openWork.related">
+          <h2 data-i18n="openWork.more">More open works</h2>
           <div class="open-work-related-list" data-open-work-related></div>
         </section>
       </article>
@@ -159,156 +173,176 @@
 
     <main class="route-page splatify-webapp-page" id="splatify-webapp" data-route="splatify-webapp" hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="Splatify web app navigation">
+        <nav class="open-work-nav" aria-label="Splatify web app navigation" data-i18n-aria-label="splatify.webAppNavigation">
           <a href="%BASE_URL%splatify">Splatify</a>
-          <a href="%BASE_URL%open-works">Open works</a>
-          <a href="#top" data-scroll-top>Top</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
       <article class="splatify-webapp-shell">
         <section class="splatify-webapp-hero" aria-labelledby="splatify-webapp-title">
           <p class="open-work-kicker">Splatify</p>
-          <h1 id="splatify-webapp-title">SPLATIFY WEB APP</h1>
+          <h1 id="splatify-webapp-title" data-i18n="splatify.webAppLabel">SPLATIFY WEB APP</h1>
         </section>
-        <section class="splatify-webapp-frame" aria-label="Splatify web app">
-          <iframe data-splatify-webapp-frame title="SPLATIFY web app" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+        <section class="splatify-webapp-frame" aria-label="Splatify web app" data-i18n-aria-label="splatify.webAppAria">
+          <iframe data-splatify-webapp-frame title="SPLATIFY web app" data-i18n-title="splatify.webAppLabel" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
         </section>
       </article>
     </main>
 
     <main class="route-page splatify-webapp-page" id="splatify-webapp-export" data-route="splatify-webapp-export" hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="Splatify export navigation">
-          <a href="%BASE_URL%splatify-webapp">Web app</a>
+        <nav class="open-work-nav" aria-label="Splatify export navigation" data-i18n-aria-label="splatify.exportNavigation">
+          <a href="%BASE_URL%splatify-webapp" data-i18n="splatify.webAppLink">Web app</a>
           <a href="%BASE_URL%splatify">Splatify</a>
-          <a href="#top" data-scroll-top>Top</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
       <article class="splatify-webapp-shell">
         <section class="splatify-webapp-hero" aria-labelledby="splatify-export-title">
           <p class="open-work-kicker">Splatify</p>
-          <h1 id="splatify-export-title">SPLATIFY EXPORT</h1>
+          <h1 id="splatify-export-title" data-i18n="splatify.exportLabel">SPLATIFY EXPORT</h1>
         </section>
-        <section class="splatify-webapp-frame" aria-label="Splatify export">
-          <iframe data-splatify-export-frame title="SPLATIFY export" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
+        <section class="splatify-webapp-frame" aria-label="Splatify export" data-i18n-aria-label="splatify.exportAria">
+          <iframe data-splatify-export-frame title="SPLATIFY export" data-i18n-title="splatify.exportLabel" allow="clipboard-read; clipboard-write; fullscreen"></iframe>
         </section>
       </article>
     </main>
 
     <main class="route-page splatify-webapp-page" id="jeju-wave-radio-webapp" data-route="jeju-wave-radio-webapp" hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="JEJU WAVE RADIO web app navigation">
+        <nav class="open-work-nav" aria-label="JEJU WAVE RADIO web app navigation" data-i18n-aria-label="jejuWave.navigation">
           <a href="%BASE_URL%jeju-wave-radio">JEJU WAVE RADIO</a>
-          <a href="%BASE_URL%open-works">Open works</a>
-          <a href="#top" data-scroll-top>Top</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
       <article class="splatify-webapp-shell">
         <section class="splatify-webapp-hero" aria-labelledby="jeju-wave-radio-webapp-title">
-          <p class="open-work-kicker">Ambient web radio</p>
-          <h1 id="jeju-wave-radio-webapp-title">JEJU WAVE RADIO WEB APP</h1>
+          <p class="open-work-kicker" data-i18n="jejuWave.ambient">Ambient web radio</p>
+          <h1 id="jeju-wave-radio-webapp-title" data-i18n="jejuWave.webAppLabel">JEJU WAVE RADIO WEB APP</h1>
         </section>
-        <section class="splatify-webapp-frame" aria-label="JEJU WAVE RADIO web app">
-          <iframe data-jeju-wave-radio-frame title="JEJU WAVE RADIO web app" allow="autoplay"></iframe>
+        <section class="splatify-webapp-frame" aria-label="JEJU WAVE RADIO web app" data-i18n-aria-label="jejuWave.webAppLabel">
+          <iframe data-jeju-wave-radio-frame title="JEJU WAVE RADIO web app" data-i18n-title="jejuWave.webAppLabel" allow="autoplay"></iframe>
         </section>
       </article>
     </main>
 
     <main class="route-page open-works-index-page" id="open-works" data-route="open-works" hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="Open works navigation">
-          <a href="%BASE_URL%home">Home</a>
-          <a href="%BASE_URL%open-works">Open works</a>
-          <a href="#top" data-scroll-top>Top</a>
+        <nav class="open-work-nav" aria-label="Open works navigation" data-i18n-aria-label="openWorks.navigation">
+          <a href="%BASE_URL%home" data-i18n="navigation.home">Home</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
 
       <article class="open-works-index-content">
         <section class="open-works-index-hero" aria-labelledby="open-works-index-title">
-          <h1 id="open-works-index-title" data-open-works-page-title>Open Works</h1>
-          <p data-open-works-page-summary>다양한 작업들의 아카이빙 및 실험실 공간입니다.</p>
+          <h1 id="open-works-index-title" data-open-works-page-title data-i18n="navigation.openWorks">Open Works</h1>
+          <p data-open-works-page-summary data-i18n="openWorks.summary">An archive and laboratory for a range of projects.</p>
         </section>
-        <section class="open-works-index-list" aria-label="Open works list" data-open-works-index-list></section>
+        <section class="open-works-index-list" aria-label="Open works list" data-i18n-aria-label="openWorks.list" data-open-works-index-list>
+          <p class="loading-copy" data-i18n="openWorks.loading">Loading open works...</p>
+        </section>
       </article>
     </main>
 
     <main class="route-page feedback-page" id="feedback" data-route="feedback" hidden>
       <header class="open-work-topbar">
-        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
           <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
         </a>
-        <nav class="open-work-nav" aria-label="Feedback navigation">
-          <a href="%BASE_URL%home">Home</a>
-          <a href="%BASE_URL%open-works">Open works</a>
-          <a href="#top" data-scroll-top>Top</a>
+        <nav class="open-work-nav" aria-label="Feedback navigation" data-i18n-aria-label="feedback.navigation">
+          <a href="%BASE_URL%home" data-i18n="navigation.home">Home</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
         </nav>
       </header>
 
       <article class="feedback-content">
         <section class="feedback-hero" aria-labelledby="feedback-title">
-          <p class="open-work-kicker">Feedback</p>
-          <h1 id="feedback-title">Feedback</h1>
-          <p data-feedback-intro>Open work에 대한 의견을 남겨주세요.</p>
+          <p class="open-work-kicker" data-i18n="navigation.feedback">Feedback</p>
+          <h1 id="feedback-title" data-i18n="navigation.feedback">Feedback</h1>
+          <p data-feedback-intro data-i18n="feedback.intro">Open work에 대한 의견을 남겨주세요.</p>
         </section>
 
         <form class="feedback-form" data-feedback-form>
           <label>
-            <span>Open work</span>
+            <span data-i18n="openWork.label">Open work</span>
             <select name="work" data-feedback-work-select></select>
           </label>
           <label>
-            <span>Email</span>
+            <span data-i18n="home.emailAddress">Email</span>
             <input name="email" type="email" autocomplete="email" placeholder="your@email.com" />
           </label>
           <label>
-            <span>Feedback</span>
-            <textarea name="message" rows="8" placeholder="좋았던 점, 불편한 점, 필요한 기능을 적어주세요." required></textarea>
+            <span data-i18n="feedback.label">Feedback</span>
+            <textarea name="message" rows="8" placeholder="Share your thoughts." data-i18n-placeholder="feedback.placeholder" required></textarea>
           </label>
           <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
-          <button class="feedback-submit" type="submit">SUBMIT</button>
+          <button class="feedback-submit" type="submit" data-i18n="feedback.submit">SUBMIT</button>
         </form>
       </article>
     </main>
 
     <main class="route-page kyutomatte-page" id="kyutomatte" data-route="kyutomatte" aria-label="KYUTOMATTE">
+      <header class="kyutomatte-language-header">
+        <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+          <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+          <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+        </div>
+      </header>
       <article class="portfolio-content">
         <br />
         <h1 class="click-anywhere">KYUTO MATTE</h1>
 
-        <section class="intro-copy bodycopy2" aria-label="Profile">
+        <section class="intro-copy bodycopy2" aria-label="Profile" data-i18n-aria-label="profile.label">
           <p>
             <b>
-              서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.<br />
-              3D, AI 이미지·영상, 모션 그래픽, 실험적인 비주얼 디렉션을 중심으로 감각적인 이미지를 설계하고 확장합니다.<br />
+              <span data-i18n="profile.intro">서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.</span><br />
+              <span data-i18n="profile.detail">3D, AI 이미지·영상, 모션 그래픽, 실험적인 비주얼 디렉션을 중심으로 감각적인 이미지를 설계하고 확장합니다.</span><br />
               <br />
-              문의 및 협업 제안은 Instagram @kyuto.matte 또는 gray.ojat@gmail.com으로 연락 부탁드립니다.
-            </b>
-          </p>
-          <p>
-            <b>
-              Seoul-based visual creative working across artist visuals, 3D, AI-generated imagery, moving image, and experimental visual direction.<br />
-              I create atmospheric, image-driven works for music, fashion, brand, and digital contexts.<br />
-              <br />
-              For inquiries and collaborations, please contact me via Instagram @kyuto.matte or gray.ojat@gmail.com.
+              <span data-i18n="profile.contact">문의 및 협업 제안은 Instagram @kyuto.matte 또는 gray.ojat@gmail.com으로 연락 부탁드립니다.</span>
             </b>
           </p>
         </section>
 
         <hr />
 
-        <h2 class="click-anywhere">VISUAL WORKS</h2>
+        <h2 class="click-anywhere" data-i18n="profile.visualWorksHeading">VISUAL WORKS</h2>
 
         <section class="work-group visual-work-section" aria-labelledby="blackpink-title">
           <h3 class="sub-titles" id="blackpink-title">📍for BLACKPINK</h3>
@@ -361,9 +395,9 @@
 
         <hr />
 
-        <h2 class="click-anywhere">AI WORKS</h2>
+        <h2 class="click-anywhere" data-i18n="profile.aiWorksHeading">AI WORKS</h2>
 
-        <section class="work-group ai-work-list" aria-label="AI works">
+        <section class="work-group ai-work-list" aria-label="AI works" data-i18n-aria-label="profile.aiWorks">
           <figure class="media-card media-card-large">
             <video src="https://freight.cargo.site/m/X2898146962606299286356594513940/KYUTO-OHIR_BF_0329low.mp4" controls muted playsinline></video>
             <figcaption class="caption"><b>✤ Full AI commercial video for ‘OHIR’</b></figcaption>
@@ -396,7 +430,7 @@
       </article>
     </main>
 
-    <main class="route-page cargo-page" id="cargo" data-route="cargo" aria-label="Cargo legacy clone">
+    <main class="route-page cargo-page" id="cargo" data-route="cargo" aria-label="Cargo legacy clone" data-i18n-aria-label="cargo.label">
       <div class="video-backdrop" aria-hidden="true">
         <video
           class="background-video"
@@ -408,27 +442,31 @@
         ></video>
       </div>
 
-      <header class="marquee-strip" aria-label="KYUTO MATTE marquee">
+      <header class="marquee-strip" aria-label="KYUTO MATTE marquee" data-i18n-aria-label="cargo.marquee">
         <div class="marquee-track">
-          <a class="marquee-text" href="%BASE_URL%home" aria-label="KYUTO MATTE home">
+          <a class="marquee-text" href="%BASE_URL%home" aria-label="KYUTO MATTE home" data-i18n-aria-label="navigation.kyutoHome">
             KYUTO MATTE 🁇 KYUTO MATTE 🁇&nbsp;
           </a>
           <a class="marquee-text" href="%BASE_URL%home" aria-hidden="true" tabindex="-1">
             KYUTO MATTE 🁇 KYUTO MATTE 🁇&nbsp;
           </a>
         </div>
+        <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+          <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+          <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+        </div>
       </header>
 
-      <section class="click-stage" aria-label="Home action">
-        <a class="button-14-copy" href="%BASE_URL%kyutomatte" aria-label="Click me">
+      <section class="click-stage" aria-label="Home action" data-i18n-aria-label="cargo.homeAction">
+        <a class="button-14-copy" href="%BASE_URL%kyutomatte" aria-label="Click me" data-i18n-aria-label="cargo.clickMe">
           <span class="button-line">
             <span class="mouse-icon" aria-hidden="true"></span>
-            <span>CLICK</span>
+            <span data-i18n="cargo.click">CLICK</span>
             <span class="mouse-icon" aria-hidden="true"></span>
           </span>
           <span class="button-line">
             <span class="mouse-icon" aria-hidden="true"></span>
-            <span>ME</span>
+            <span data-i18n="cargo.me">ME</span>
             <span class="mouse-icon" aria-hidden="true"></span>
           </span>
         </a>
@@ -438,8 +476,8 @@
     </main>
 
     <div class="gallery-lightbox" data-gallery-lightbox hidden>
-      <button class="gallery-close" type="button" data-gallery-close aria-label="Close gallery">×</button>
-      <button class="gallery-nav gallery-prev" type="button" data-gallery-prev aria-label="Previous image">‹</button>
+      <button class="gallery-close" type="button" data-gallery-close aria-label="Close gallery" data-i18n-aria-label="gallery.close">×</button>
+      <button class="gallery-nav gallery-prev" type="button" data-gallery-prev aria-label="Previous image" data-i18n-aria-label="gallery.previous">‹</button>
       <figure class="gallery-stage">
         <img data-gallery-image alt="" />
         <video data-gallery-video controls muted playsinline preload="metadata" hidden></video>
@@ -448,7 +486,7 @@
           <small data-gallery-count></small>
         </figcaption>
       </figure>
-      <button class="gallery-nav gallery-next" type="button" data-gallery-next aria-label="Next image">›</button>
+      <button class="gallery-nav gallery-next" type="button" data-gallery-next aria-label="Next image" data-i18n-aria-label="gallery.next">›</button>
     </div>
   </body>
 </html>

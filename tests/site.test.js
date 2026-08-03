@@ -16,6 +16,57 @@ async function readProjectBytes(path) {
   return readFile(new URL(`../${path}`, import.meta.url));
 }
 
+function withoutEnglishColumns(text) {
+  const rows = [];
+  let cell = "";
+  let row = [];
+  let quoted = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+    if (char === '"' && quoted && next === '"') {
+      cell += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === ',' && !quoted) {
+      row.push(cell);
+      cell = "";
+    } else if ((char === '\n' || char === '\r') && !quoted) {
+      if (char === '\r' && next === '\n') index += 1;
+      row.push(cell);
+      if (row.some((value) => value !== "")) rows.push(row);
+      row = [];
+      cell = "";
+    } else {
+      cell += char;
+    }
+  }
+  row.push(cell);
+  if (row.some((value) => value !== "")) rows.push(row);
+
+  const includedColumns = rows[0].flatMap((header, index) => header.endsWith('_en') ? [] : [index]);
+  const encode = (value) => /[,"\r\n]/.test(value) ? `"${value.replaceAll('"', '""')}"` : value;
+  return rows.map((values) => includedColumns.map((index) => encode(values[index] ?? "")).join(',')).join('\n');
+}
+
+test('locale helpers default to English and preserve Korean selection', async () => {
+  const { DEFAULT_LOCALE, createLocaleStore } = await importProjectModule('src/i18n.js');
+  const storage = new Map();
+  const store = createLocaleStore({
+    storage: {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value)
+    }
+  });
+
+  assert.equal(DEFAULT_LOCALE, 'en');
+  assert.equal(store.getLocale(), 'en');
+  store.setLocale('ko');
+  assert.equal(store.getLocale(), 'ko');
+});
+
 test("favicon uses a large transparent PNG", async () => {
   const html = await readProjectFile("index.html");
 
@@ -349,6 +400,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   const html = await readProjectFile("index.html");
   const js = await readProjectFile("src/main.js");
   const css = await readProjectFile("src/styles.css");
+  const { translate } = await importProjectModule("src/i18n.js");
 
   assert.match(html, /KYUTO\.MATTE/);
   assert.match(html, /id="top"/);
@@ -379,7 +431,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(html, /KYUTO-LOGO\.png/);
   assert.match(html, /class="logo-mark"/);
   assert.match(html, /class="logo-mark"[\s\S]*data-home-reset/);
-  assert.match(html, /<span class="contact-link contact-link-static" aria-label="Email address">gray\.ojat@gmail\.com<\/span>/);
+  assert.match(html, /<span class="contact-link contact-link-static" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat@gmail\.com<\/span>/);
   assert.doesNotMatch(html, /<a class="contact-link" href="mailto:gray\.ojat@gmail\.com">/);
   assert.match(html, /aria-label="Reset home view"/);
   assert.doesNotMatch(html, /class="logo-link"/);
@@ -396,8 +448,8 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.doesNotMatch(html, /kyuto-hongkong-hero\.png/);
   assert.doesNotMatch(html, /home-hero/);
   assert.doesNotMatch(html, /Hero thumbnail/);
-  assert.match(html, /서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다/);
-  assert.match(html, /Kyuto is a Seoul-based visual creative/i);
+  assert.equal(translate("profile.intro", "ko"), "서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다.");
+  assert.match(html, /VISUAL CREATIVE FOR ARTISTS &amp; PRODUCT BRANDS/);
   assert.match(css, /\.info-section h1\s*\{[^}]*font-weight:\s*900;[^}]*letter-spacing:\s*-0\.035em;/s);
   assert.match(css, /\.info-lede\s*\{[^}]*font-weight:\s*690;[^}]*text-wrap:\s*wrap;/s);
   assert.match(css, /\.info-detail\s*\{[^}]*word-break:\s*keep-all;[^}]*text-wrap:\s*wrap;/s);
@@ -452,7 +504,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /getArtistSummaryLabel/);
   assert.match(js, /value\.includes\("fashion"\)/);
   assert.match(js, /categoryKeys\.some\(\(key\) => key === "mv" \|\| key === "fashion"\)/);
-  assert.match(js, /categoryLabelByKey/);
+  assert.match(js, /getLocalizedCategory/);
   assert.match(js, /getArtistYearRange/);
   assert.match(js, /setWorkView\("summary"/);
   assert.match(js, /data-summary-artist/);
@@ -463,7 +515,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.doesNotMatch(js, /data-view-panel="feed"/);
   assert.doesNotMatch(js, /function renderWorkEntry\(/);
   assert.doesNotMatch(js, /function renderWorkGroups\(/);
-  assert.doesNotMatch(js, /function getSplatifyExportUrl\(/);
+  assert.match(js, /function getSplatifyExportUrl\(/);
   assert.doesNotMatch(js, /window\.addEventListener\(\s*"mousedown"/s);
   assert.match(js, /data-gallery-work-id/);
   assert.match(js, /function restoreSheetLeadingQuote\(value\)/);
@@ -499,7 +551,7 @@ test("every video gallery starts at media 01 and video triggers share thumbnail 
   const rowsByWorkId = new Map();
 
   for (const row of workMedia.trim().split(/\r?\n/).slice(1)) {
-    const [workId, type, , , sort] = row.split(",");
+    const [workId, type, , , , sort] = row.split(",");
     if (!rowsByWorkId.has(workId)) rowsByWorkId.set(workId, []);
     rowsByWorkId.get(workId).push({ type, sort: Number(sort) });
   }
@@ -565,8 +617,8 @@ test("inactive work views and collapsed summary groups do not mount media", asyn
   const js = await readProjectFile("src/main.js");
 
   assert.match(js, /function getActiveWorkView\(\)/);
-  assert.match(js, /activeSummaryArtist === group\.artist\s*\?\s*renderSummaryWorkRows\(group\.items,\s*mediaByWorkId\)\s*:\s*""/);
-  assert.match(js, /activeView === "overview"\s*\?\s*renderOverviewGrid\(works,\s*mediaByWorkId\)\s*:\s*renderSummaryGroups\(summaryWorks,\s*mediaByWorkId\)/);
+  assert.match(js, /expanded\s*\?\s*renderSummaryWorkRows\(group\.items,\s*mediaByWorkId\)\s*:\s*""/);
+  assert.match(js, /activeView === "overview"\s*\?\s*renderOverviewGrid\(localizedWorks,\s*mediaByWorkId\)\s*:\s*renderSummaryGroups\(summaryWorks,\s*mediaByWorkId\)/);
   assert.match(js, /setActiveSummaryArtist\(summaryButton\.dataset\.summaryArtist\);/);
 });
 
@@ -717,14 +769,14 @@ test("root route exposes a full-page WebGL bead curtain before home", async () =
 });
 
 test("editable CSV data drives home works and open works", async () => {
-  const works = await readProjectFile("public/data/works.csv");
-  const workMedia = await readProjectFile("public/data/work-media.csv");
-  const openWorks = await readProjectFile("public/data/open-works.csv");
-  const openWorksPage = await readProjectFile("public/data/open-works-page.csv");
-  const openWorkDetails = await readProjectFile("public/data/open-work-details.csv");
-  const openWorkLinks = await readProjectFile("public/data/open-work-links.csv");
-  const openWorkExamples = await readProjectFile("public/data/open-work-examples.csv");
-  const openWorkManuals = await readProjectFile("public/data/open-work-manuals.csv");
+  const works = withoutEnglishColumns(await readProjectFile("public/data/works.csv"));
+  const workMedia = withoutEnglishColumns(await readProjectFile("public/data/work-media.csv"));
+  const openWorks = withoutEnglishColumns(await readProjectFile("public/data/open-works.csv"));
+  const openWorksPage = withoutEnglishColumns(await readProjectFile("public/data/open-works-page.csv"));
+  const openWorkDetails = withoutEnglishColumns(await readProjectFile("public/data/open-work-details.csv"));
+  const openWorkLinks = withoutEnglishColumns(await readProjectFile("public/data/open-work-links.csv"));
+  const openWorkExamples = withoutEnglishColumns(await readProjectFile("public/data/open-work-examples.csv"));
+  const openWorkManuals = withoutEnglishColumns(await readProjectFile("public/data/open-work-manuals.csv"));
   const packageJson = await readProjectFile("package.json");
   const openWorksWorkbookScript = await readProjectFile("scripts/sync-open-works-workbook.py");
   const readme = await readProjectFile("README.md");
@@ -1053,7 +1105,7 @@ test("editable CSV data drives home works and open works", async () => {
   assert.match(openWorksWorkbookScript, /"public\/data\/works\.xlsx"/);
   assert.match(openWorksWorkbookScript, /"open-works"/);
   assert.match(openWorksWorkbookScript, /"open-work-details"/);
-  assert.match(openWorksWorkbookScript, /image_alt,external_note/);
+  assert.match(openWorksWorkbookScript, /image_alt,image_alt_en,external_note,external_note_en/);
   assert.match(openWorksWorkbookScript, /"open-works-page"/);
   assert.match(openWorksWorkbookScript, /"open-work-links"/);
   assert.match(openWorksWorkbookScript, /"open-work-examples"/);
@@ -1102,7 +1154,7 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /data-route="feedback"/);
   assert.match(html, /data-feedback-form/);
   assert.match(html, /data-feedback-status/);
-  assert.match(html, /<button class="feedback-submit" type="submit">SUBMIT<\/button>/);
+  assert.match(html, /<button class="feedback-submit" type="submit" data-i18n="feedback\.submit">SUBMIT<\/button>/);
 
   assert.match(js, /openWorkDetailsBySlug/);
   assert.match(js, /"touch-designer":\s*"interactive-visuals"/);
@@ -1114,8 +1166,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(js, /openWorksPageRows/);
   assert.match(js, /getSafeOpenWorkExternalUrl/);
   assert.match(js, /\["https:",\s*"http:",\s*"mailto:"\]\.includes\(url\.protocol\)/);
-  assert.match(js, /Open work not found/);
-  assert.match(js, /목록에서 다시 선택해주세요/);
+  assert.match(js, /translate\("openWork\.notFound", locale\)/);
+  assert.match(js, /translate\("openWork\.backToList", locale\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works-page\.csv"\)/);
   assert.match(js, /renderFeedbackPage/);
   assert.match(js, /handleFeedbackSubmit/);
@@ -1154,8 +1206,8 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(js, /detail_summary/);
   assert.match(js, /image_url/);
   assert.match(js, /has-open-work-media/);
-  assert.match(js, /Open Works — KYUTO\.MATTE/);
-  assert.match(js, /Feedback — KYUTO\.MATTE/);
+  assert.match(js, /translate\("navigation\.openWorks", locale\)/);
+  assert.match(html, /data-i18n="navigation\.feedback"/);
   assert.doesNotMatch(js, /닫아도 유지되는 작업 세션/);
   assert.doesNotMatch(js, /JEJU WAVE RADIO는 날씨 데이터/);
 
@@ -1223,11 +1275,12 @@ test("open works have shared landing pages and routes", async () => {
 test("kyutomatte page exposes the detailed profile and work archive", async () => {
   const html = await readProjectFile("index.html");
   const js = await readProjectFile("src/main.js");
+  const { translate } = await importProjectModule('src/i18n.js');
 
   assert.match(html, /id="kyutomatte"/);
   assert.match(html, /KYUTOMATTE/);
   assert.match(html, /서울을 기반으로 아티스트와 브랜드를 위한 비주얼 크리에이티브 작업을 합니다/);
-  assert.match(html, /Seoul-based visual creative working across artist visuals/);
+  assert.equal(translate('profile.intro', 'en'), 'Seoul-based visual creative working across artist visuals, 3D, AI-generated imagery, moving image, and experimental visual direction.');
   assert.match(html, /VISUAL WORKS/);
   assert.match(html, /for BLACKPINK/);
   assert.match(html, /for BABYMONSTER/);

@@ -45,19 +45,19 @@ WORKBOOKS = {
         workbook_path=ROOT / "public/data/open-works.xlsx",
         title="Open Works Data",
         sheets=[
-            SheetConfig("open-works", ROOT / "public/data/open-works.csv", "title,summary,slug"),
+            SheetConfig("open-works", ROOT / "public/data/open-works.csv", "title,title_en,summary,summary_en,slug"),
             SheetConfig(
                 "open-work-details",
                 ROOT / "public/data/open-work-details.csv",
-                "slug,kicker,detail_summary,format,status,role,lede,detail,features,action_label,image_url,image_alt,external_note",
+                "slug,kicker,kicker_en,detail_summary,detail_summary_en,format,format_en,status,status_en,role,role_en,lede,lede_en,detail,detail_en,features,features_en,action_label,action_label_en,image_url,image_alt,image_alt_en,external_note,external_note_en",
             ),
-            SheetConfig("open-works-page", ROOT / "public/data/open-works-page.csv", "title,summary"),
-            SheetConfig("open-work-links", ROOT / "public/data/open-work-links.csv", "slug,label,url,sort"),
-            SheetConfig("open-work-examples", ROOT / "public/data/open-work-examples.csv", "slug,kicker,title,media_url,media_type,caption,sort"),
+            SheetConfig("open-works-page", ROOT / "public/data/open-works-page.csv", "title,title_en,summary,summary_en"),
+            SheetConfig("open-work-links", ROOT / "public/data/open-work-links.csv", "slug,label,label_en,url,sort"),
+            SheetConfig("open-work-examples", ROOT / "public/data/open-work-examples.csv", "slug,kicker,kicker_en,title,title_en,media_url,media_type,caption,caption_en,sort"),
             SheetConfig(
                 "open-work-manuals",
                 ROOT / "public/data/open-work-manuals.csv",
-                "slug,section_title,step_title,body,sort",
+                "slug,section_title,section_title_en,step_title,step_title_en,body,body_en,sort",
             ),
         ],
     ),
@@ -66,8 +66,8 @@ WORKBOOKS = {
         workbook_path=ROOT / "public/data/works.xlsx",
         title="Works Data",
         sheets=[
-            SheetConfig("works", ROOT / "public/data/works.csv", "id,overview,artist,category,year,url,text", False),
-            SheetConfig("work-media", ROOT / "public/data/work-media.csv", "work_id,type,url,caption,sort", False),
+            SheetConfig("works", ROOT / "public/data/works.csv", "id,overview,artist,artist_en,category,category_en,year,url,text,text_en", False),
+            SheetConfig("work-media", ROOT / "public/data/work-media.csv", "work_id,type,url,caption,caption_en,sort", False),
         ],
     ),
 }
@@ -125,11 +125,23 @@ def normalize_rows(rows: List[List[str]], expected_header: str) -> List[List[str
     return normalized
 
 
+def ensure_expected_width(rows: List[List[str]], expected_header: str, source: Path | str) -> None:
+    width = len(expected_header.split(","))
+    for index, row in enumerate(rows):
+        if len(row) <= width:
+            continue
+        if index == 0:
+            raise ValueError(f"{source}: unexpected trailing columns in header row")
+        if any((cell or "").strip() for cell in row[width:]):
+            raise ValueError(f"{source}: unexpected non-empty trailing cells in row {index + 1}")
+
+
 def ensure_expected_header(rows: List[List[str]], expected_header: str, source: Path | str) -> List[List[str]]:
     rows = trim_rows(rows)
     if not rows:
         raise ValueError(f"{source}: missing header row; refusing to export an empty sheet")
 
+    ensure_expected_width(rows, expected_header, source)
     width = len(expected_header.split(","))
     header = [cell if cell is not None else "" for cell in rows[0]]
     if len(header) < width:

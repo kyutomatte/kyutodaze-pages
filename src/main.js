@@ -1,7 +1,10 @@
 import "./styles.css";
 import { initHeroWebgl } from "./hero-webgl.js";
+import { createLocaleStore, getLocalizedValue, translate } from "./i18n.js";
 import { getMediaPreviewUrl } from "./media-preview.js";
 import { fromSitePath, toPublicAssetUrl, toSitePath } from "./site-url.js";
+
+const localeStore = createLocaleStore();
 
 const routes = new Set([
   "home",
@@ -24,15 +27,23 @@ let activeGalleryIndex = 0;
 let activeSummaryArtist = "";
 let currentCategoryFilter = "all";
 let openWorksList = [];
+let openWorkDetailRows = [];
+let openWorksPageRows = [];
+let openWorkLinkRows = [];
+let openWorkExampleRows = [];
+let openWorkManualRows = [];
+let workMediaRows = [];
 let openWorkDetailsBySlug = {};
 let openWorkExternalLinksBySlug = {};
 let openWorkExamplesBySlug = {};
 let openWorkManualsBySlug = {};
-let openWorksPage = { title: "Open Works", summary: "다양한 작업들의 아카이빙 및 실험실 공간입니다." };
+let openWorksPage = { title: "Open Works", summary: "" };
+const feedbackUiState = { submitting: false, statusKey: "" };
 let beadCurtainHero = null;
 let beadCurtainEnterTimer = 0;
 let beadCurtainTouchArmed = false;
 let beadCurtainEntering = false;
+let homeDataLoaded = false;
 let beadCursor = null;
 let beadCursorClickTimer = 0;
 const OVERVIEW_MEDIA_LIMIT = 3;
@@ -206,7 +217,7 @@ function groupGalleryMedia(items) {
       workId,
       type,
       url,
-      caption: item.caption?.trim() ?? "",
+      caption: getLocalizedValue(item, "caption", localeStore.getLocale()).trim(),
       sort: Number.parseFloat(item.sort) || 0
     };
 
@@ -224,24 +235,26 @@ function groupGalleryMedia(items) {
 function getCategoryKey(category) {
   const value = category?.toLowerCase() ?? "";
 
-  if (value.includes("music video") || value.includes("m/v")) return "mv";
-  if (value.includes("album")) return "album";
-  if (value.includes("graphic")) return "graphic";
-  if (value.includes("fashion")) return "fashion";
+  if (value.includes("music video") || value.includes("m/v") || value.includes("뮤직비디오")) return "mv";
+  if (value.includes("album") || value.includes("앨범")) return "album";
+  if (value.includes("graphic") || value.includes("그래픽")) return "graphic";
+  if (value.includes("fashion") || value.includes("패션")) return "fashion";
   if (value.includes("ai") || value.includes("3d") || value.includes("commercial")) return "ai3d";
 
   return "graphic";
 }
 
-const categoryLabelByKey = {
-  album: "Album",
-  graphic: "Graphic",
-  ai3d: "AI/3D"
-};
+function getLocalizedCategory(work, locale) {
+  const categoryKey = getCategoryKey(work.category_en || work.category);
+  const localizedTaxonomy = translate(`taxonomy.${categoryKey}`, locale);
+  return localizedTaxonomy === `taxonomy.${categoryKey}`
+    ? getLocalizedValue(work, "category", locale).trim()
+    : localizedTaxonomy;
+}
 
 function getArtistSummaryLabel(works) {
-  const categoryKeys = works.map((work) => getCategoryKey(work.category));
-  if (categoryKeys.some((key) => key === "mv" || key === "fashion")) return "Visual Creative";
+  const categoryKeys = works.map((work) => work.categoryKey ?? getCategoryKey(work.category));
+  if (categoryKeys.some((key) => key === "mv" || key === "fashion")) return translate("taxonomy.visualCreative", localeStore.getLocale());
 
   const counts = new Map();
   for (const key of categoryKeys) {
@@ -252,12 +265,12 @@ function getArtistSummaryLabel(works) {
     (first, second) => second[1] - first[1]
   )[0] ?? [];
 
-  return categoryLabelByKey[topCategory] ?? "Graphic";
+  return translate(`taxonomy.${topCategory}`, localeStore.getLocale());
 }
 
 function getFilteredWorks(works) {
   if (currentCategoryFilter === "all") return works;
-  return works.filter((work) => getCategoryKey(work.category) === currentCategoryFilter);
+  return works.filter((work) => (work.categoryKey ?? getCategoryKey(work.category)) === currentCategoryFilter);
 }
 
 function isOverviewWork(work) {
@@ -371,34 +384,27 @@ function syncBeadCursor(route) {
   if (!isBeadCurtain) beadCursor.classList.remove("is-whiteout", "is-clicking");
 }
 
+function getSplatifyExportUrl() {
+  return SPLATIFY_WEBAPP_URL;
+}
+
+function syncFrameSource(frame, source) {
+  if (!frame) return;
+  if (source) {
+    if (frame.getAttribute("src") !== source) frame.src = source;
+  } else if (frame.hasAttribute("src")) {
+    frame.removeAttribute("src");
+  }
+}
+
 function syncSplatifyWebappFrames(route) {
   const webappFrame = document.querySelector("[data-splatify-webapp-frame]");
   const exportFrame = document.querySelector("[data-splatify-export-frame]");
   const jejuWaveRadioFrame = document.querySelector("[data-jeju-wave-radio-frame]");
 
-  if (webappFrame) {
-    if (route === "splatify-webapp") {
-      webappFrame.src = SPLATIFY_WEBAPP_URL;
-    } else {
-      webappFrame.removeAttribute("src");
-    }
-  }
-
-  if (exportFrame) {
-    if (route === "splatify-webapp-export") {
-      exportFrame.src = SPLATIFY_WEBAPP_URL;
-    } else {
-      exportFrame.removeAttribute("src");
-    }
-  }
-
-  if (jejuWaveRadioFrame) {
-    if (route === "jeju-wave-radio-webapp") {
-      jejuWaveRadioFrame.src = toPublicAssetUrl(JEJU_WAVE_RADIO_WEBAPP_PATH);
-    } else {
-      jejuWaveRadioFrame.removeAttribute("src");
-    }
-  }
+  syncFrameSource(webappFrame, route === "splatify-webapp" ? SPLATIFY_WEBAPP_URL : "");
+  syncFrameSource(exportFrame, route === "splatify-webapp-export" ? getSplatifyExportUrl() : "");
+  syncFrameSource(jejuWaveRadioFrame, route === "jeju-wave-radio-webapp" ? toPublicAssetUrl(JEJU_WAVE_RADIO_WEBAPP_PATH) : "");
 }
 
 function clearBeadCurtainEnterTimer() {
@@ -480,21 +486,15 @@ function renderRoute(route) {
     ensureBeadCurtainHero();
   }
 
-  if (route === "open-work") {
-    document.title = "Open Works — KYUTO.MATTE";
-  } else if (route === "open-works") {
-    document.title = "Open Works — KYUTO.MATTE";
-  } else if (route === "feedback") {
-    document.title = "Feedback — KYUTO.MATTE";
-  } else if (route === "bead-curtain") {
-    document.title = "KYUTO.MATTE";
-  } else if (route === "kyutomatte") {
-    document.title = "Work Archive — KYUTO.MATTE";
-  } else if (route === "cargo") {
-    document.title = "Cargo Legacy — KYUTO.MATTE";
-  } else {
-    document.title = "KYUTO.MATTE — Visual Creative";
-  }
+  const titleKey = {
+    "open-work": "document.openWorks",
+    "open-works": "document.openWorks",
+    feedback: "document.feedback",
+    "bead-curtain": "document.site",
+    kyutomatte: "document.archive",
+    cargo: "document.cargo"
+  }[route] ?? "document.home";
+  document.title = translate(titleKey, localeStore.getLocale());
 }
 
 function smoothScrollToWorks() {
@@ -614,11 +614,12 @@ function getGalleryTriggerMedia(firstItem, alt) {
 function renderGalleryTrigger(work, mediaItems) {
   const firstItem = mediaItems[0];
   const title = escapeHtml(work.artist);
-  const alt = escapeHtml(firstItem.caption || `${work.artist} media`);
+  const locale = localeStore.getLocale();
+  const alt = escapeHtml(firstItem.caption || `${work.artist} ${translate("gallery.media", locale)}`);
   const caption = mediaItems.length > 1 ? `<span class="feed-gallery-count">${mediaItems.length}</span>` : "";
 
   return `
-    <button class="feed-gallery-trigger" type="button" data-gallery-work-id="${escapeHtml(work.id)}" aria-label="${title} gallery">
+    <button class="feed-gallery-trigger" type="button" data-gallery-work-id="${escapeHtml(work.id)}" aria-label="${title} ${escapeHtml(translate("gallery.label", locale))}">
       ${getGalleryTriggerMedia(firstItem, alt)}
       ${caption}
     </button>
@@ -631,6 +632,7 @@ function renderMedia(work, mediaByWorkId) {
 
   const url = extractEmbeddableUrl(work.url);
   const title = escapeHtml(work.artist);
+  const locale = localeStore.getLocale();
 
   if (!url) return "";
 
@@ -645,10 +647,10 @@ function renderMedia(work, mediaByWorkId) {
 
   if (/\.(png|jpe?g|webp|gif)$/i.test(url)) {
     const previewUrl = getMediaPreviewUrl(url);
-    return `<a class="feed-link-card" href="${escapeHtml(url)}" target="_blank" rel="noreferrer"><img src="${escapeHtml(previewUrl)}" alt="${title} thumbnail" loading="lazy" decoding="async" data-original-src="${escapeHtml(url)}" /></a>`;
+    return `<a class="feed-link-card" href="${escapeHtml(url)}" target="_blank" rel="noreferrer"><img src="${escapeHtml(previewUrl)}" alt="${title} ${escapeHtml(translate("gallery.thumbnail", locale))}" loading="lazy" decoding="async" data-original-src="${escapeHtml(url)}" /></a>`;
   }
 
-  return `<a class="feed-link-card feed-text-link" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">Open link</a>`;
+  return `<a class="feed-link-card feed-text-link" href="${escapeHtml(url)}" target="_blank" rel="noreferrer">${escapeHtml(translate("media.openLink", locale))}</a>`;
 }
 
 function renderSummaryWorkRows(works, mediaByWorkId) {
@@ -679,29 +681,30 @@ function renderSummaryGroups(works, mediaByWorkId = new Map()) {
   const groups = [];
 
   for (const work of works) {
-    const group = groups.find((item) => item.artist === work.artist);
+    const summaryKey = work.summaryKey ?? work.artist;
+    const group = groups.find((item) => item.key === summaryKey);
     if (group) {
       group.items.push(work);
     } else {
-      groups.push({ artist: work.artist, items: [work] });
+      groups.push({ key: summaryKey, artist: work.artist, items: [work] });
     }
   }
 
   return `
-    <div class="summary-list">
+    <div class="summary-list" data-view-panel="summary">
       ${groups
         .map((group) => {
-          const expanded = activeSummaryArtist === group.artist;
+          const expanded = activeSummaryArtist === group.key;
           return `
-            <section class="summary-work-group" data-summary-group="${escapeHtml(group.artist)}" data-summary-expanded="${expanded}">
-              <button class="summary-row" type="button" data-summary-artist="${escapeHtml(group.artist)}" aria-expanded="${expanded}">
+            <section class="summary-work-group" data-summary-group="${escapeHtml(group.key)}" data-summary-expanded="${expanded}">
+              <button class="summary-row" type="button" data-summary-artist="${escapeHtml(group.key)}" aria-expanded="${expanded}">
                 <span class="summary-row-icon" aria-hidden="true">${expanded ? "−" : "+"}</span>
                 <strong>${escapeHtml(group.artist)}</strong>
                 <span class="summary-row-year">${escapeHtml(getArtistYearRange(group.items))}</span>
                 <small class="summary-row-label">${escapeHtml(getArtistSummaryLabel(group.items))}</small>
               </button>
               <div class="summary-group-body">
-                ${activeSummaryArtist === group.artist ? renderSummaryWorkRows(group.items, mediaByWorkId) : ""}
+                ${expanded ? renderSummaryWorkRows(group.items, mediaByWorkId) : ""}
               </div>
             </section>
           `;
@@ -719,8 +722,8 @@ function renderOverviewGrid(works, mediaByWorkId = new Map()) {
       ${stillItems
         .map(
           ({ work, item }) => `
-            <button class="overview-still-button" type="button" data-gallery-work-id="${escapeHtml(work.id)}" aria-label="${escapeHtml(work.artist)} stills">
-              <img src="${escapeHtml(getMediaPreviewUrl(item.url))}" alt="${escapeHtml(item.caption || `${work.artist} still`)}" loading="lazy" decoding="async" data-original-src="${escapeHtml(item.url)}" />
+            <button class="overview-still-button" type="button" data-gallery-work-id="${escapeHtml(work.id)}" aria-label="${escapeHtml(work.artist)} ${escapeHtml(translate("gallery.stills", localeStore.getLocale()))}">
+              <img src="${escapeHtml(getMediaPreviewUrl(item.url))}" alt="${escapeHtml(item.caption || `${work.artist} ${translate("gallery.still", localeStore.getLocale())}`)}" loading="lazy" decoding="async" data-original-src="${escapeHtml(item.url)}" />
             </button>
           `
         )
@@ -733,12 +736,20 @@ function renderWorks(works = allWorks, mediaByWorkId = galleriesByWorkId) {
   const list = document.querySelector("[data-works-list]");
   if (!list) return;
 
-  const summaryWorks = getFilteredWorks(works);
+  const localizedWorks = works.map((work) => ({
+    ...work,
+    summaryKey: work.artist?.trim() || work.artist_en?.trim() || work.id,
+    categoryKey: getCategoryKey(work.category_en || work.category),
+    artist: getLocalizedValue(work, "artist", localeStore.getLocale()).trim(),
+    category: getLocalizedCategory(work, localeStore.getLocale()),
+    text: getLocalizedValue(work, "text", localeStore.getLocale()).trim()
+  }));
+  const summaryWorks = getFilteredWorks(localizedWorks);
   const activeView = getActiveWorkView();
 
   list.innerHTML =
     activeView === "overview"
-      ? renderOverviewGrid(works, mediaByWorkId)
+      ? renderOverviewGrid(localizedWorks, mediaByWorkId)
       : renderSummaryGroups(summaryWorks, mediaByWorkId);
 }
 
@@ -751,8 +762,8 @@ function renderOpenWorks(items) {
       (item) => `
         <a class="open-work-link" href="${escapeHtml(item.slug)}">
           <span class="open-work-arrow" aria-hidden="true">→</span>
-          <span class="open-work-title">${escapeHtml(item.title)}</span>
-          <small>${escapeHtml(item.summary)}</small>
+          <span class="open-work-title">${escapeHtml(getLocalizedValue(item, "title", localeStore.getLocale()))}</span>
+          <small>${escapeHtml(getLocalizedValue(item, "summary", localeStore.getLocale()))}</small>
         </a>
       `
     )
@@ -760,6 +771,8 @@ function renderOpenWorks(items) {
 }
 
 function renderOpenWorksIndex() {
+  if (!homeDataLoaded) return;
+
   const list = document.querySelector("[data-open-works-index-list]");
   setText("[data-open-works-page-title]", openWorksPage.title);
   setText("[data-open-works-page-summary]", openWorksPage.summary);
@@ -774,8 +787,8 @@ function renderOpenWorksIndex() {
       return `
         <a class="open-work-index-link" href="${escapeHtml(item.slug)}">
           <span class="open-work-arrow" aria-hidden="true">→</span>
-          <strong>${escapeHtml(item.title)}</strong>
-          <p>${escapeHtml(item.summary)}</p>
+          <strong>${escapeHtml(getLocalizedValue(item, "title", localeStore.getLocale()))}</strong>
+          <p>${escapeHtml(getLocalizedValue(item, "summary", localeStore.getLocale()))}</p>
           <small>${escapeHtml(detail.kicker || "")}</small>
         </a>
       `;
@@ -784,14 +797,15 @@ function renderOpenWorksIndex() {
 }
 
 function getOpenWorkDetails(openWorks, detailRows) {
+  const locale = localeStore.getLocale();
   const detailsBySlug = Object.fromEntries(
     openWorks
       .filter((item) => item.slug)
       .map((item) => [
         item.slug.replace(/^\/+/, ""),
         {
-          title: item.title?.trim() ?? "",
-          summary: item.summary?.trim() ?? "",
+          title: getLocalizedValue(item, "title", locale).trim(),
+          summary: getLocalizedValue(item, "summary", locale).trim(),
           slug: item.slug.replace(/^\/+/, "")
         }
       ])
@@ -803,21 +817,21 @@ function getOpenWorkDetails(openWorks, detailRows) {
 
     detailsBySlug[slug] = {
       ...(detailsBySlug[slug] ?? { slug }),
-      kicker: row.kicker?.trim() ?? "",
-      summary: row.detail_summary?.trim() || detailsBySlug[slug]?.summary || "",
-      format: row.format?.trim() ?? "",
-      status: row.status?.trim() ?? "",
-      role: row.role?.trim() ?? "",
-      lede: row.lede?.trim() ?? "",
-      detail: row.detail?.trim() ?? "",
-      features: (row.features ?? "")
+      kicker: getLocalizedValue(row, "kicker", locale).trim(),
+      summary: getLocalizedValue(row, "detail_summary", locale).trim() || detailsBySlug[slug]?.summary || "",
+      format: getLocalizedValue(row, "format", locale).trim(),
+      status: getLocalizedValue(row, "status", locale).trim(),
+      role: getLocalizedValue(row, "role", locale).trim(),
+      lede: getLocalizedValue(row, "lede", locale).trim(),
+      detail: getLocalizedValue(row, "detail", locale).trim(),
+      features: getLocalizedValue(row, "features", locale)
         .split("|")
         .map((feature) => feature.trim())
         .filter(Boolean),
-      actionLabel: row.action_label?.trim() || "문의하기",
-      externalNote: row.external_note?.trim() ?? "",
+      actionLabel: getLocalizedValue(row, "action_label", locale).trim() || translate("feedback.label", locale),
+      externalNote: getLocalizedValue(row, "external_note", locale).trim(),
       imageUrl: normalizeMediaUrl(row.image_url),
-      imageAlt: row.image_alt?.trim() || detailsBySlug[slug]?.title || ""
+      imageAlt: getLocalizedValue(row, "image_alt", locale).trim() || detailsBySlug[slug]?.title || ""
     };
   }
 
@@ -825,9 +839,10 @@ function getOpenWorkDetails(openWorks, detailRows) {
 }
 
 function getOpenWorkExternalLinks(rows) {
+  const locale = localeStore.getLocale();
   return rows.reduce((linksBySlug, row) => {
     const slug = row.slug?.trim();
-    const label = row.label?.trim();
+    const label = getLocalizedValue(row, "label", locale).trim();
     if (!slug || !label) return linksBySlug;
 
     const link = {
@@ -842,17 +857,18 @@ function getOpenWorkExternalLinks(rows) {
 }
 
 function getOpenWorkExamples(rows) {
+  const locale = localeStore.getLocale();
   return rows.reduce((examplesBySlug, row) => {
     const slug = row.slug?.trim();
     const mediaUrl = normalizeMediaUrl(row.media_url);
     if (!slug || !mediaUrl) return examplesBySlug;
 
     const example = {
-      kicker: row.kicker?.trim() || "Example",
-      title: row.title?.trim() || "Example",
+      kicker: getLocalizedValue(row, "kicker", locale).trim() || translate("openWork.example", locale),
+      title: getLocalizedValue(row, "title", locale).trim() || translate("openWork.example", locale),
       mediaUrl,
       mediaType: row.media_type?.trim().toLowerCase() || "video",
-      caption: row.caption?.trim() ?? "",
+      caption: getLocalizedValue(row, "caption", locale).trim(),
       sort: Number.parseInt(row.sort, 10) || 0
     };
 
@@ -862,17 +878,27 @@ function getOpenWorkExamples(rows) {
 }
 
 function getOpenWorkManuals(rows) {
+  const locale = localeStore.getLocale();
   return rows.reduce((manualsBySlug, row) => {
     const slug = row.slug?.trim();
-    const stepTitle = row.step_title?.trim();
-    const body = row.body?.trim();
+    const stepTitle = getLocalizedValue(row, "step_title", locale).trim();
+    const body = getLocalizedValue(row, "body", locale).trim();
     if (!slug || !stepTitle || !body) return manualsBySlug;
 
     const step = {
       slug,
-      sectionTitle: row.section_title?.trim() || "사용 설명서",
+      sectionTitle: getLocalizedValue(row, "section_title", locale).trim() || translate("openWork.manual", locale),
       title: stepTitle,
       body,
+      layout: row.step_title === "환경별 설치 방법"
+        ? "jebi-table"
+        : row.step_title === "호출 예시"
+          ? "jebi-call-grid"
+          : row.step_title === "처음 실행 허용하기"
+            ? "macos-permission"
+            : row.slug === "jebi-agent"
+              ? "jebi-rich"
+              : "plain",
       sort: Number.parseInt(row.sort, 10) || 0
     };
 
@@ -948,11 +974,11 @@ function renderManualCallGrid(body) {
 }
 
 function renderJebiManualBody(step) {
-  if (step.title === "환경별 설치 방법") {
+  if (step.layout === "jebi-table") {
     return renderManualTable(step.body);
   }
 
-  if (step.title === "호출 예시") {
+  if (step.layout === "jebi-call-grid") {
     return renderManualCallGrid(step.body);
   }
 
@@ -960,25 +986,27 @@ function renderJebiManualBody(step) {
 }
 
 function renderManualStepBody(step) {
-  if (step.slug === "jebi-agent") {
+  if (step.layout.startsWith("jebi-")) {
     return renderJebiManualBody(step);
   }
 
-  if (step.title !== "처음 실행 허용하기") {
+  if (step.layout !== "macos-permission") {
     return `<p>${escapeHtml(step.body)}</p>`;
   }
 
-  const lead = step.body.split("먼저 Done")[0].trim();
+  const permissionMarker = step.body.search(/(?:먼저 Done|Select Done)/);
+  const lead = permissionMarker >= 0 ? step.body.slice(0, permissionMarker).trim() : "";
+  const locale = localeStore.getLocale();
 
   return `
     <div class="open-work-manual-note">
-      <p>${escapeHtml(lead)}</p>
-      <ol class="open-work-manual-path" aria-label="macOS first launch permission path">
-        <li>Done을 눌러 경고창을 닫습니다.</li>
-        <li>System Settings &gt; Privacy &amp; Security로 이동합니다.</li>
-        <li>Open Anyway를 선택한 뒤 앱을 다시 엽니다.</li>
+      ${lead ? `<p>${escapeHtml(lead)}</p>` : ""}
+      <ol class="open-work-manual-path" aria-label="${escapeHtml(translate("openWork.macosPermissionPath", locale))}">
+        <li>${escapeHtml(translate("openWork.macosPermissionStep1", locale))}</li>
+        <li>${escapeHtml(translate("openWork.macosPermissionStep2", locale))}</li>
+        <li>${escapeHtml(translate("openWork.macosPermissionStep3", locale))}</li>
       </ol>
-      <p class="open-work-manual-smallprint">한국어 경로: 완료를 누른 뒤 시스템 설정 &gt; 개인정보 보호 및 보안에서 그래도 열기를 선택하세요. macOS 버전에 따라 버튼 이름이 조금 다를 수 있습니다.</p>
+      <p class="open-work-manual-smallprint">${escapeHtml(translate("openWork.macosPermissionNote", locale))}</p>
     </div>
   `;
 }
@@ -989,6 +1017,7 @@ function setText(selector, value) {
 }
 
 function renderOpenWorkPage(slug) {
+  const locale = localeStore.getLocale();
   slug = getCanonicalOpenWorkSlug(slug);
   const work = openWorkDetailsBySlug[slug];
   const page = document.querySelector("[data-open-work-page]");
@@ -1009,23 +1038,23 @@ function renderOpenWorkPage(slug) {
   const manualSteps = document.querySelector("[data-open-work-manual-steps]");
 
   if (!work && Object.keys(openWorkDetailsBySlug).length === 0) {
-    setText("[data-open-work-title]", "Open work");
-    setText("[data-open-work-summary]", "Loading open work...");
+    setText("[data-open-work-title]", translate("navigation.openWorks", locale));
+    setText("[data-open-work-summary]", translate("openWork.loading", locale));
     return;
   }
 
-    if (!work) {
-    setText("[data-open-work-kicker]", "Open Works");
-    setText("[data-open-work-title]", "Open work not found");
-    setText("[data-open-work-summary]", "목록에서 다시 선택해주세요.");
+  if (!work) {
+    setText("[data-open-work-kicker]", translate("navigation.openWorks", locale));
+    setText("[data-open-work-title]", translate("openWork.notFound", locale));
+    setText("[data-open-work-summary]", translate("openWork.notFound", locale));
     setText("[data-open-work-format]", "");
     setText("[data-open-work-status]", "");
     setText("[data-open-work-role]", "");
     setText("[data-open-work-lede]", "");
     setText("[data-open-work-detail]", "");
     if (action) {
-      action.textContent = "목록으로";
-          action.href = toSitePath("/open-works");
+      action.textContent = translate("openWork.backToList", locale);
+      action.href = toSitePath("/open-works");
     }
     if (page) page.classList.remove("has-open-work-media");
     if (features) features.innerHTML = "";
@@ -1063,26 +1092,26 @@ function renderOpenWorkPage(slug) {
 
   if (action) {
     action.textContent = `${work.title} ${work.actionLabel}`;
-        action.href = `${toSitePath("/feedback")}?work=${encodeURIComponent(work.slug)}`;
+    action.href = `${toSitePath("/feedback")}?work=${encodeURIComponent(work.slug)}`;
   }
 
   if (page) page.classList.toggle("has-open-work-media", Boolean(work.imageUrl));
 
   if (externalActions && externalLinks && externalNote) {
-        const links = openWorkExternalLinksBySlug[work.slug] ?? [];
-        externalActions.hidden = links.length === 0;
-        externalLinks.hidden = links.length === 0;
-        externalLinks.innerHTML = links
-          .map((link) => {
-            const safeUrl = getSafeOpenWorkExternalUrl(link.url);
-            if (!safeUrl) {
-              return `<span class="open-work-external-link is-disabled" aria-disabled="true">${escapeHtml(link.label)}</span>`;
-            }
+    const links = openWorkExternalLinksBySlug[work.slug] ?? [];
+    externalActions.hidden = links.length === 0;
+    externalLinks.hidden = links.length === 0;
+    externalLinks.innerHTML = links
+      .map((link) => {
+        const safeUrl = getSafeOpenWorkExternalUrl(link.url);
+        if (!safeUrl) {
+          return `<span class="open-work-external-link is-disabled" aria-disabled="true">${escapeHtml(link.label)}</span>`;
+        }
 
-                const downloadAttribute = safeUrl.startsWith("/assets/downloads/") ? " download" : "";
-                const href = safeUrl.startsWith("/") ? toSitePath(safeUrl) : safeUrl;
-                return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
-          })
+        const downloadAttribute = safeUrl.startsWith("/assets/downloads/") ? " download" : "";
+        const href = safeUrl.startsWith("/") ? toSitePath(safeUrl) : safeUrl;
+        return `<a class="open-work-external-link" href="${escapeHtml(href)}"${downloadAttribute}${getExternalLinkAttributes(href)}>${escapeHtml(link.label)}</a>`;
+      })
       .join("");
     externalNote.hidden = true;
     externalNote.replaceChildren();
@@ -1116,8 +1145,8 @@ function renderOpenWorkPage(slug) {
     const examples = openWorkExamplesBySlug[work.slug] ?? [];
     example.hidden = examples.length === 0;
     const firstExample = examples[0];
-    exampleKicker.textContent = firstExample?.kicker || "Example";
-    exampleTitle.textContent = firstExample?.title || "Example";
+    exampleKicker.textContent = firstExample?.kicker || translate("openWork.example", locale);
+    exampleTitle.textContent = firstExample?.title || translate("openWork.example", locale);
     exampleMedia.innerHTML = examples
       .map((item) => {
         if (item.mediaType === "image") {
@@ -1132,7 +1161,7 @@ function renderOpenWorkPage(slug) {
   if (manual && manualTitle && manualSteps) {
     const steps = openWorkManualsBySlug[work.slug] ?? [];
     manual.hidden = steps.length === 0;
-    manualTitle.textContent = steps[0]?.sectionTitle || "사용 설명서";
+    manualTitle.textContent = steps[0]?.sectionTitle || translate("openWork.manual", locale);
     manualSteps.innerHTML = steps
       .map(
         (step, index) => `
@@ -1163,33 +1192,35 @@ function renderOpenWorkPage(slug) {
 }
 
 function renderFeedbackPage() {
+  const locale = localeStore.getLocale();
   const select = document.querySelector("[data-feedback-work-select]");
   const intro = document.querySelector("[data-feedback-intro]");
-  const selectedSlug = new URLSearchParams(window.location.search).get("work") ?? "";
+  const selectedSlug = select?.value || new URLSearchParams(window.location.search).get("work") || "";
 
   if (select) {
     select.innerHTML = openWorksList
       .map((item) => {
         const slug = item.slug?.replace(/^\/+/, "") ?? "";
         const selected = slug === selectedSlug ? " selected" : "";
-        return `<option value="${escapeHtml(slug)}"${selected}>${escapeHtml(item.title)}</option>`;
+        return `<option value="${escapeHtml(slug)}"${selected}>${escapeHtml(getLocalizedValue(item, "title", locale))}</option>`;
       })
       .join("");
+    if (selectedSlug) select.value = selectedSlug;
   }
 
   const selectedWork = openWorkDetailsBySlug[selectedSlug];
   if (intro) {
-    intro.textContent = selectedWork
-      ? `${selectedWork.title}에 대한 의견을 남겨주세요.`
-      : "Open work에 대한 의견을 남겨주세요.";
+    intro.textContent = `${selectedWork ? `${selectedWork.title} — ` : ""}${translate("feedback.intro", locale)}`;
   }
+
+  renderFeedbackState(document.querySelector("[data-feedback-form]"));
 }
 
 function getFeedbackPayload(form) {
   const formData = new FormData(form);
   const slug = String(formData.get("work") ?? "");
   const work = openWorkDetailsBySlug[slug];
-  const title = work?.title || slug || "Open work";
+  const title = work?.title || slug || translate("feedback.mailtoFallbackWorkTitle", localeStore.getLocale());
   const email = String(formData.get("email") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
 
@@ -1197,16 +1228,18 @@ function getFeedbackPayload(form) {
 }
 
 function openFeedbackMailto(payload) {
+  const locale = localeStore.getLocale();
+  const title = payload.title || translate("feedback.mailtoFallbackWorkTitle", locale);
   const body = [
-    `Work: ${payload.title}`,
-    payload.email ? `Email: ${payload.email}` : "",
+    `${translate("feedback.mailtoWorkLabel", locale)}: ${title}`,
+    payload.email ? `${translate("feedback.mailtoEmailLabel", locale)}: ${payload.email}` : "",
     "",
     payload.message
   ]
     .filter(Boolean)
     .join("\n");
 
-  window.location.href = `mailto:${FEEDBACK_RECIPIENT}?subject=${encodeURIComponent(`${payload.title} feedback`)}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:${FEEDBACK_RECIPIENT}?subject=${encodeURIComponent(`${title} ${translate("feedback.mailtoSubjectSuffix", locale)}`)}&body=${encodeURIComponent(body)}`;
 }
 
 async function sendFeedbackToEndpoint(payload) {
@@ -1225,17 +1258,27 @@ async function sendFeedbackToEndpoint(payload) {
   return true;
 }
 
-function setFeedbackStatus(form, message) {
+function renderFeedbackState(form) {
+  if (!form) return;
+
+  const locale = localeStore.getLocale();
   const status = form.querySelector("[data-feedback-status]");
-  if (status) status.textContent = message;
+  const submit = form.querySelector(".feedback-submit");
+  if (status) status.textContent = feedbackUiState.statusKey ? translate(feedbackUiState.statusKey, locale) : "";
+  if (submit) {
+    submit.disabled = feedbackUiState.submitting;
+    submit.textContent = translate(feedbackUiState.submitting ? "feedback.submitting" : "feedback.submit", locale);
+  }
+}
+
+function setFeedbackStatus(form, statusKey) {
+  feedbackUiState.statusKey = statusKey;
+  renderFeedbackState(form);
 }
 
 function setFeedbackSubmitting(form, submitting) {
-  const submit = form.querySelector(".feedback-submit");
-  if (!submit) return;
-
-  submit.disabled = submitting;
-  submit.textContent = submitting ? "SENDING" : "SUBMIT";
+  feedbackUiState.submitting = submitting;
+  renderFeedbackState(form);
 }
 
 async function handleFeedbackSubmit(form) {
@@ -1247,14 +1290,14 @@ async function handleFeedbackSubmit(form) {
   }
 
   setFeedbackSubmitting(form, true);
-  setFeedbackStatus(form, "전송 중입니다.");
+  setFeedbackStatus(form, "feedback.sending");
 
   try {
     await sendFeedbackToEndpoint(payload);
     form.reset();
-    setFeedbackStatus(form, "메시지가 전송되었습니다.");
+    setFeedbackStatus(form, "feedback.sent");
   } catch {
-    setFeedbackStatus(form, "전송에 문제가 있어 메일 앱으로 연결합니다.");
+    setFeedbackStatus(form, "feedback.failed");
     openFeedbackMailto(payload);
   } finally {
     setFeedbackSubmitting(form, false);
@@ -1262,7 +1305,7 @@ async function handleFeedbackSubmit(form) {
 }
 
 async function loadHomeData() {
-  const [works, openWorks, openWorkDetails, openWorksPageRows, openWorkLinks, openWorkExamples, openWorkManuals, workMedia] = await Promise.all([
+  const [works, openWorks, openWorkDetails, pageRows, openWorkLinks, openWorkExamples, openWorkManuals, workMedia] = await Promise.all([
     fetchCsv("/data/works.csv"),
     fetchCsv("/data/open-works.csv"),
     fetchCsv("/data/open-work-details.csv"),
@@ -1275,21 +1318,71 @@ async function loadHomeData() {
 
   allWorks = works;
   openWorksList = openWorks;
-  openWorksPage = openWorksPageRows[0] ?? openWorksPage;
-  openWorkDetailsBySlug = getOpenWorkDetails(openWorksList, openWorkDetails);
-  openWorkExternalLinksBySlug = getOpenWorkExternalLinks(openWorkLinks);
-  openWorkExamplesBySlug = getOpenWorkExamples(openWorkExamples);
-  openWorkManualsBySlug = getOpenWorkManuals(openWorkManuals);
-  galleriesByWorkId = groupGalleryMedia(workMedia);
-  renderWorks();
-  renderOpenWorks(openWorksList);
-  if (getRoute(window.location.pathname) === "open-work") {
-    renderOpenWorkPage(getOpenWorkSlug(window.location.pathname));
-  } else if (getRoute(window.location.pathname) === "open-works") {
-    renderOpenWorksIndex();
-  } else if (getRoute(window.location.pathname) === "feedback") {
-    renderFeedbackPage();
+  openWorkDetailRows = openWorkDetails;
+  openWorksPageRows = pageRows;
+  openWorkLinkRows = openWorkLinks;
+  openWorkExampleRows = openWorkExamples;
+  openWorkManualRows = openWorkManuals;
+  workMediaRows = workMedia;
+}
+
+function refreshLocalizedData() {
+  const locale = localeStore.getLocale();
+  const pageRow = openWorksPageRows[0] ?? {};
+  openWorksPage = {
+    title: getLocalizedValue(pageRow, "title", locale).trim() || translate("navigation.openWorks", locale),
+    summary: getLocalizedValue(pageRow, "summary", locale).trim()
+  };
+  openWorkDetailsBySlug = getOpenWorkDetails(openWorksList, openWorkDetailRows);
+  openWorkExternalLinksBySlug = getOpenWorkExternalLinks(openWorkLinkRows);
+  openWorkExamplesBySlug = getOpenWorkExamples(openWorkExampleRows);
+  openWorkManualsBySlug = getOpenWorkManuals(openWorkManualRows);
+  galleriesByWorkId = groupGalleryMedia(workMediaRows);
+}
+
+function applyLocaleStatic(locale) {
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    if (element.matches(".feedback-submit")) return;
+    element.textContent = translate(element.dataset.i18n, locale);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+    element.placeholder = translate(element.dataset.i18nPlaceholder, locale);
+  });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => {
+    element.setAttribute("aria-label", translate(element.dataset.i18nAriaLabel, locale));
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((element) => {
+    element.setAttribute("title", translate(element.dataset.i18nTitle, locale));
+  });
+  document.querySelectorAll("[data-language-option]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.languageOption === locale));
+  });
+}
+
+function applyLocale(locale) {
+  applyLocaleStatic(locale);
+  renderFeedbackState(document.querySelector("[data-feedback-form]"));
+
+  if (homeDataLoaded) {
+    refreshLocalizedData();
+    refreshActiveGalleryLocale();
+    renderWorks();
+    renderOpenWorks(openWorksList);
   }
+
+  renderRoute(getRoute(window.location.pathname));
+}
+
+function refreshActiveGalleryLocale() {
+  const activeWorkId = activeGalleryItems[0]?.workId;
+  if (!activeWorkId) return;
+
+  const localizedItems = galleriesByWorkId.get(activeWorkId) ?? [];
+  if (localizedItems.length === 0) return;
+
+  activeGalleryItems = localizedItems;
+  activeGalleryIndex = Math.min(activeGalleryIndex, activeGalleryItems.length - 1);
+  updateGallery();
 }
 
 function updateGallery() {
@@ -1315,7 +1408,7 @@ function updateGallery() {
     video.removeAttribute("src");
     image.hidden = false;
     image.src = item.url;
-    image.alt = item.caption || "Work still";
+    image.alt = item.caption || translate("gallery.workStill", localeStore.getLocale());
   }
 
   caption.textContent = item.caption;
@@ -1368,6 +1461,8 @@ function navigate(pathname, search = "", hash = "") {
   renderRoute(route);
 }
 
+localeStore.subscribe(applyLocale);
+applyLocaleStatic(localeStore.getLocale());
 renderRoute(getRoute(window.location.pathname));
 
 document.addEventListener(
@@ -1388,6 +1483,13 @@ document.addEventListener(
 document.addEventListener("pointerdown", handleBeadCurtainPointerDown, true);
 
 document.addEventListener("click", (event) => {
+  const languageButton = event.target.closest("[data-language-option]");
+  if (languageButton) {
+    event.preventDefault();
+    localeStore.setLocale(languageButton.dataset.languageOption);
+    return;
+  }
+
   if (event.target.closest("[data-bead-curtain-webgl]")) {
     event.preventDefault();
     if (isCoarsePointerInput()) return;
@@ -1489,6 +1591,11 @@ window.addEventListener("popstate", () => {
   renderRoute(getRoute(window.location.pathname));
 });
 
-loadHomeData().catch((error) => {
-  console.error(error);
-});
+loadHomeData()
+  .then(() => {
+    homeDataLoaded = true;
+    applyLocale(localeStore.getLocale());
+  })
+  .catch((error) => {
+    console.error(error);
+  });
