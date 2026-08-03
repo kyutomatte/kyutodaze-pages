@@ -1054,7 +1054,7 @@ body[data-page="bead-curtain"] {
   .open-work-link,
   .contact-link
 ) {
-  transition: transform 120ms var(--ease-out), color 160ms ease, background-color 160ms ease;
+  transition: transform 70ms var(--ease-out), color 100ms ease, background-color 100ms ease;
 }
 
 :is(

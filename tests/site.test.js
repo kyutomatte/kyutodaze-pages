@@ -1267,6 +1267,7 @@ test("marquee uses Cargo rem scale and content-height strip", async () => {
 
 test("new portfolio stylesheet uses swapped two-column editorial feed layout", async () => {
   const css = await readProjectFile("src/styles.css");
+  const js = await readProjectFile("src/main.js");
 
   assert.match(css, /--editorial-paper:\s*#fbfaf7;/);
   assert.match(css, /--editorial-ink:\s*#2d2d2d;/);
@@ -1305,7 +1306,11 @@ test("new portfolio stylesheet uses swapped two-column editorial feed layout", a
   assert.match(css, /--ease-out:\s*cubic-bezier\(0\.23,\s*1,\s*0\.32,\s*1\);/);
   assert.match(css, /\.open-work-hero\s*\{[^}]*min-height:\s*clamp\(32rem,\s*40vh,\s*38rem\);/s);
   assert.match(css, /\.open-work-page\.has-open-work-media\s+\.open-work-hero\s*\{[^}]*min-height:\s*48rem;/s);
+  assert.match(css, /transition:\s*transform 70ms var\(--ease-out\), color 100ms ease, background-color 100ms ease;/);
   assert.match(css, /:is\([^)]*\.top-link[^)]*\):active\s*\{[^}]*transform:\s*scale\(0\.97\);/s);
+  const setWorkViewSource = js.match(/function setWorkView\(view\)[\s\S]*?\n}\n\nfunction resetHomeView/);
+  assert.ok(setWorkViewSource);
+  assert.doesNotMatch(setWorkViewSource[0], /smoothScrollToWorks/);
   assert.match(css, /\.gallery-lightbox\s*\{/);
   assert.match(css, /\.gallery-lightbox\.is-open\s*\{/);
   assert.match(css, /\.gallery-stage\s*\{/);

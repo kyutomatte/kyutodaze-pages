@@ -288,11 +288,8 @@ function updateCategoryFilterButtons() {
 function setCategoryFilter(filter) {
   currentCategoryFilter = currentCategoryFilter === filter ? "all" : filter;
   activeSummaryArtist = "";
-  setWorkView("summary", { scroll: false });
+  setWorkView("summary");
   updateCategoryFilterButtons();
-
-  renderWorks();
-  smoothScrollToWorks();
 }
 
 function getOpenWorkSlug(pathname) {
@@ -508,9 +505,8 @@ function getActiveWorkView() {
   return document.querySelector(".new-home-page")?.dataset.workView === "overview" ? "overview" : "summary";
 }
 
-function setWorkView(view, options = {}) {
+function setWorkView(view) {
   const nextView = view === "overview" ? "overview" : "summary";
-  const { scroll = true } = options;
   const homePage = document.querySelector(".new-home-page");
   if (!homePage) return;
 
@@ -520,15 +516,13 @@ function setWorkView(view, options = {}) {
   });
 
   renderWorks();
-  if (scroll) smoothScrollToWorks();
 }
 
 function resetHomeView() {
   currentCategoryFilter = "all";
   activeSummaryArtist = "";
-  setWorkView("summary", { scroll: false });
+  setWorkView("summary");
   updateCategoryFilterButtons();
-  renderWorks();
   smoothScrollToWorks();
 }
 
