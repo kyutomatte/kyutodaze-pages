@@ -107,7 +107,7 @@ const translations = {
     "inquiries.navigation": "Inquiries navigation",
     "inquiries.kicker": "Contact",
     "inquiries.title": "Inquiries",
-    "inquiries.intro": "For project inquiries, collaborations, and general questions, please leave a message.",
+    "inquiries.intro": "Project inquiries, collaborations, and general questions are welcome.",
     "inquiries.message": "Message",
     "inquiries.placeholder": "Tell me about your project.",
     "inquiries.subject": "General inquiry",
