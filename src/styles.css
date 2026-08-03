@@ -1385,10 +1385,6 @@ body[data-page="bead-curtain"] {
   font-size: 1.55rem;
 }
 
-.contact-link-static {
-  cursor: default;
-}
-
 .open-work-link {
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr);
@@ -1432,7 +1428,7 @@ body[data-page="bead-curtain"] {
   background: var(--editorial-ink);
 }
 
-.contact-link:not(.contact-link-static):hover {
+.contact-link:hover {
   color: var(--editorial-paper);
   background: var(--editorial-ink);
 }

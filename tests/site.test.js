@@ -447,8 +447,8 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(html, /KYUTO-LOGO\.png/);
   assert.match(html, /class="logo-mark"/);
   assert.match(html, /class="logo-mark"[\s\S]*data-home-reset/);
-  assert.match(html, /<span class="contact-link contact-link-static" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat@gmail\.com<\/span>/);
-  assert.doesNotMatch(html, /<a class="contact-link" href="mailto:gray\.ojat@gmail\.com">/);
+  assert.match(html, /<a class="contact-link" href="mailto:gray\.ojat@gmail\.com\?subject=Project%20inquiry%20-%20KYUTO\.MATTE" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat@gmail\.com<\/a>/);
+  assert.match(html, /<a class="contact-link" href="https:\/\/www\.instagram\.com\/kyuto\.matte" target="_blank" rel="noreferrer">@kyuto\.matte<\/a>/);
   assert.match(html, /aria-label="Reset home view"/);
   assert.doesNotMatch(html, /class="logo-link"/);
   assert.match(html, /class="top-link"/);
@@ -1395,8 +1395,8 @@ test("new portfolio stylesheet uses swapped two-column editorial feed layout", a
   assert.match(css, /\.info-lede\s*\{[^}]*font-weight:\s*620;/s);
   assert.match(css, /\.info-detail\s*\{[^}]*font-weight:\s*440;/s);
   assert.match(css, /\.contact-card\s*\{[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
-  assert.match(css, /\.contact-link-static\s*\{[^}]*cursor:\s*default;/s);
-  assert.match(css, /\.contact-link:not\(\.contact-link-static\):hover\s*\{/);
+  assert.doesNotMatch(css, /\.contact-link-static/);
+  assert.match(css, /\.contact-link:hover\s*\{/);
   assert.match(css, /\.open-work-link\s*\{[^}]*border:\s*1px solid var\(--editorial-rule\);/s);
   assert.doesNotMatch(css, /\.new-home-page[\s\S]*linear-gradient/);
 });
