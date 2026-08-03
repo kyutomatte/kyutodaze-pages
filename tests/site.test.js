@@ -447,7 +447,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(html, /KYUTO-LOGO\.png/);
   assert.match(html, /class="logo-mark"/);
   assert.match(html, /class="logo-mark"[\s\S]*data-home-reset/);
-  assert.match(html, /<a class="contact-link" href="mailto:gray\.ojat@gmail\.com\?subject=Project%20inquiry%20-%20KYUTO\.MATTE" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat@gmail\.com<\/a>/);
+  assert.match(html, /<a class="contact-link" href="%BASE_URL%feedback" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat\x40gmail\.com<\/a>/);
   assert.match(html, /<a class="contact-link" href="https:\/\/www\.instagram\.com\/kyuto\.matte" target="_blank" rel="noreferrer">@kyuto\.matte<\/a>/);
   assert.match(html, /aria-label="Reset home view"/);
   assert.doesNotMatch(html, /class="logo-link"/);
