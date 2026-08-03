@@ -2,7 +2,7 @@
   font-family: "Diatype Variable";
   font-style: normal;
   font-weight: 200 900;
-  src: url("https://kyutomatte.github.io/kyutodaze-pages/assets/Cargo-DiatypePlusVariable.woff2") format("woff2-variations");
+  src: url("../../../assets/Cargo-DiatypePlusVariable.woff2") format("woff2-variations");
 }
 
 :root {

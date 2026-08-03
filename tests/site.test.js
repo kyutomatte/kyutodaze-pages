@@ -61,6 +61,7 @@ test('Jeju Wave Radio is served as a local static web app', async () => {
   const html = await readProjectFile('index.html');
   const js = await readProjectFile('src/main.js');
   const appHtml = await readProjectFile('public/apps/jeju-wave-radio/web/index.html');
+  const appStyles = await readProjectFile('public/apps/jeju-wave-radio/web/styles.css');
   const renderer = await readProjectFile('public/apps/jeju-wave-radio/web/src/renderer.js');
   const videos = [
     'sunny_day.mp4',
@@ -80,6 +81,8 @@ test('Jeju Wave Radio is served as a local static web app', async () => {
   assert.match(renderer, /\.\.\/assets\/video\/\$\{state\}\.mp4/);
   assert.match(appHtml, /id="start-audio"/);
   assert.match(appHtml, /id="refresh-live-data"/);
+  assert.match(appStyles, /url\("\.\.\/\.\.\/\.\.\/assets\/Cargo-DiatypePlusVariable\.woff2"\)/);
+  assert.doesNotMatch(appStyles, /https:\/\/kyutomatte\.github\.io\/kyutodaze-pages\/assets\/Cargo-DiatypePlusVariable\.woff2/);
 
   videos.forEach((file) => {
     assert.ok(
