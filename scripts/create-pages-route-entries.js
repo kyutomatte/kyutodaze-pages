@@ -10,7 +10,8 @@ export const fixedRouteDirectories = [
   "jeju-wave-radio-webapp",
   "splatify-webapp",
   "splatify-webapp-export",
-  "feedback"
+  "feedback",
+  "inquiries"
 ];
 
 export const openWorkRouteAliases = {

@@ -83,6 +83,22 @@ test('English open-work data uses a dedicated cache version', async () => {
   );
 });
 
+
+test("contact email opens a dedicated Formspree inquiries page", async () => {
+  const html = await readProjectFile("index.html");
+  const js = await readProjectFile("src/main.js");
+  const i18n = await readProjectFile("src/i18n.js");
+
+  assert.match(html, /href="%BASE_URL%inquiries"[^>]*>gray\.ojat\x40gmail\.com<\/a>/);
+  assert.match(html, /data-route="inquiries"/);
+  assert.match(html, /<form class="feedback-form" data-feedback-form data-inquiry-form>/);
+  assert.match(html, /<input name="email" type="email" autocomplete="email"[^>]*required \/>/);
+  assert.match(html, /<textarea name="message" rows="8"[^>]*required>/);
+  assert.match(js, /"inquiries"/);
+  assert.match(js, /renderInquiryPage/);
+  assert.match(i18n, /"document\.inquiries": "Inquiries — KYUTO\.MATTE"/);
+});
+
 test("favicon uses a large transparent PNG", async () => {
   const html = await readProjectFile("index.html");
 
@@ -187,6 +203,7 @@ test('Pages route entry generation includes fixed routes, CSV slugs, and aliases
     'splatify-webapp',
     'splatify-webapp-export',
     'feedback',
+    'inquiries',
     'splatify',
     'interactive-visuals',
     'touch-designer'
@@ -447,7 +464,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(html, /KYUTO-LOGO\.png/);
   assert.match(html, /class="logo-mark"/);
   assert.match(html, /class="logo-mark"[\s\S]*data-home-reset/);
-  assert.match(html, /<a class="contact-link" href="%BASE_URL%feedback" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat\x40gmail\.com<\/a>/);
+  assert.match(html, /<a class="contact-link" href="%BASE_URL%inquiries" aria-label="Email address" data-i18n-aria-label="home\.emailAddress">gray\.ojat\x40gmail\.com<\/a>/);
   assert.match(html, /<a class="contact-link" href="https:\/\/www\.instagram\.com\/kyuto\.matte" target="_blank" rel="noreferrer">@kyuto\.matte<\/a>/);
   assert.match(html, /aria-label="Reset home view"/);
   assert.doesNotMatch(html, /class="logo-link"/);
@@ -1158,7 +1175,6 @@ test("open works have shared landing pages and routes", async () => {
   assert.match(html, /href="%BASE_URL%home"[\s\S]*>Home</);
   assert.match(html, /href="%BASE_URL%open-works"[\s\S]*>Open works</);
   assert.match(html, /data-scroll-top[\s\S]*>Top</);
-  assert.doesNotMatch(html, /open-work-nav[\s\S]*Contact/);
   assert.match(html, /data-route="open-works"/);
   assert.match(html, /data-open-works-index-list/);
   assert.match(html, /data-route="splatify-webapp"/);

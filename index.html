@@ -67,7 +67,7 @@
             </div>
             <div class="contact-card" aria-label="Contact" data-i18n-aria-label="home.contact">
               <p data-i18n="home.contact">Contact</p>
-              <a class="contact-link" href="%BASE_URL%feedback" aria-label="Email address" data-i18n-aria-label="home.emailAddress">gray.ojat@gmail.com</a>
+              <a class="contact-link" href="%BASE_URL%inquiries" aria-label="Email address" data-i18n-aria-label="home.emailAddress">gray.ojat@gmail.com</a>
               <a class="contact-link" href="https://www.instagram.com/kyuto.matte" target="_blank" rel="noreferrer">@kyuto.matte</a>
             </div>
           </section>
@@ -311,6 +311,42 @@
           <label>
             <span data-i18n="feedback.label">Feedback</span>
             <textarea name="message" rows="8" placeholder="Share your thoughts." data-i18n-placeholder="feedback.placeholder" required></textarea>
+          </label>
+          <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
+          <button class="feedback-submit" type="submit" data-i18n="feedback.submit">SUBMIT</button>
+        </form>
+      </article>
+    </main>
+
+    <main class="route-page feedback-page" id="inquiries" data-route="inquiries" hidden>
+      <header class="open-work-topbar">
+        <a class="logo-mark" href="%BASE_URL%home" aria-label="KYUTO home" data-i18n-aria-label="navigation.kyutoHome">
+          <img class="kyuto-logo" src="/assets/KYUTO-LOGO.png" alt="KYUTO" />
+        </a>
+        <nav class="open-work-nav" aria-label="Inquiries navigation" data-i18n-aria-label="inquiries.navigation">
+          <a href="%BASE_URL%home" data-i18n="navigation.home">Home</a>
+          <a href="%BASE_URL%open-works" data-i18n="navigation.openWorks">Open works</a>
+          <a href="#top" data-scroll-top data-i18n="navigation.top">Top</a>
+          <div class="language-switcher" data-language-switcher role="group" aria-label="Language" data-i18n-aria-label="language.selector">
+            <button type="button" data-language-option="en" data-i18n-aria-label="language.en" aria-label="English" aria-pressed="true">EN</button>
+            <button type="button" data-language-option="ko" data-i18n-aria-label="language.ko" aria-label="한국어" aria-pressed="false">KO</button>
+          </div>
+        </nav>
+      </header>
+      <article class="feedback-content">
+        <section class="feedback-hero" aria-labelledby="inquiries-title">
+          <p class="open-work-kicker" data-i18n="inquiries.kicker">Contact</p>
+          <h1 id="inquiries-title" data-i18n="inquiries.title">Inquiries</h1>
+          <p data-i18n="inquiries.intro">For project inquiries, collaborations, and general questions, please leave a message.</p>
+        </section>
+        <form class="feedback-form" data-feedback-form data-inquiry-form>
+          <label>
+            <span data-i18n="home.emailAddress">Email</span>
+            <input name="email" type="email" autocomplete="email" placeholder="your.com" required />
+          </label>
+          <label>
+            <span data-i18n="inquiries.message">Message</span>
+            <textarea name="message" rows="8" placeholder="Tell me about your project." data-i18n-placeholder="inquiries.placeholder" required></textarea>
           </label>
           <p class="feedback-status" data-feedback-status role="status" aria-live="polite"></p>
           <button class="feedback-submit" type="submit" data-i18n="feedback.submit">SUBMIT</button>

@@ -15,7 +15,8 @@ const routes = new Set([
   "jeju-wave-radio-webapp",
   "splatify-webapp",
   "splatify-webapp-export",
-  "feedback"
+  "feedback",
+  "inquiries"
 ]);
 const openWorkRouteAliases = {
   "touch-designer": "interactive-visuals"
@@ -481,6 +482,8 @@ function renderRoute(route) {
     renderOpenWorksIndex();
   } else if (route === "feedback") {
     renderFeedbackPage();
+  } else if (route === "inquiries") {
+    renderInquiryPage();
   } else if (route === "bead-curtain") {
     resetBeadCurtainInteraction();
     ensureBeadCurtainHero();
@@ -490,6 +493,7 @@ function renderRoute(route) {
     "open-work": "document.openWorks",
     "open-works": "document.openWorks",
     feedback: "document.feedback",
+    inquiries: "document.inquiries",
     "bead-curtain": "document.site",
     kyutomatte: "document.archive",
     cargo: "document.cargo"
@@ -1216,11 +1220,17 @@ function renderFeedbackPage() {
   renderFeedbackState(document.querySelector("[data-feedback-form]"));
 }
 
+function renderInquiryPage() {
+  renderFeedbackState(document.querySelector("[data-inquiry-form]"));
+}
+
 function getFeedbackPayload(form) {
   const formData = new FormData(form);
   const slug = String(formData.get("work") ?? "");
   const work = openWorkDetailsBySlug[slug];
-  const title = work?.title || slug || translate("feedback.mailtoFallbackWorkTitle", localeStore.getLocale());
+  const title = work?.title || slug || (form.hasAttribute("data-inquiry-form")
+    ? translate("inquiries.subject", localeStore.getLocale())
+    : translate("feedback.mailtoFallbackWorkTitle", localeStore.getLocale()));
   const email = String(formData.get("email") ?? "").trim();
   const message = String(formData.get("message") ?? "").trim();
 
@@ -1283,9 +1293,14 @@ function setFeedbackSubmitting(form, submitting) {
 
 async function handleFeedbackSubmit(form) {
   const payload = getFeedbackPayload(form);
+  const isInquiry = form.hasAttribute("data-inquiry-form");
 
   if (!FEEDBACK_ENDPOINT) {
-    openFeedbackMailto(payload);
+    if (isInquiry) {
+      setFeedbackStatus(form, "inquiries.failed");
+    } else {
+      openFeedbackMailto(payload);
+    }
     return;
   }
 
@@ -1297,8 +1312,8 @@ async function handleFeedbackSubmit(form) {
     form.reset();
     setFeedbackStatus(form, "feedback.sent");
   } catch {
-    setFeedbackStatus(form, "feedback.failed");
-    openFeedbackMailto(payload);
+    setFeedbackStatus(form, isInquiry ? "inquiries.failed" : "feedback.failed");
+    if (!isInquiry) openFeedbackMailto(payload);
   } finally {
     setFeedbackSubmitting(form, false);
   }
