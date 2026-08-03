@@ -74,7 +74,9 @@ test('English open-work data uses a dedicated cache version', async () => {
 
   assert.match(js, /const DATA_CACHE_VERSION = "2026-08-03-i18n"/);
   assert.match(openWorks, /title,title_en,summary,summary_en,slug/);
-  assert.match(await readProjectFile('src/styles.css'), /\.open-work-nav \.language-switcher\s*\{[^}]*height:\s*2\.5rem;/s);
+  const css = await readProjectFile('src/styles.css');
+  assert.match(css, /\.open-work-nav \.language-switcher\s*\{(?=[^}]*border:\s*0;)(?=[^}]*gap:\s*0\.35rem;)/s);
+  assert.match(css, /\.open-work-nav \.language-switcher button\s*\{[^}]*border:\s*1px solid var\(--editorial-rule\);[^}]*border-radius:\s*999rem;/s);
   assert.equal(
     getLocalizedValue({ summary: '한국어 설명', summary_en: 'English description' }, 'summary', 'en'),
     'English description'
