@@ -67,6 +67,20 @@ test('locale helpers default to English and preserve Korean selection', async ()
   assert.equal(store.getLocale(), 'ko');
 });
 
+test('English open-work data uses a dedicated cache version', async () => {
+  const js = await readProjectFile('src/main.js');
+  const openWorks = await readProjectFile('public/data/open-works.csv');
+  const { getLocalizedValue } = await importProjectModule('src/i18n.js');
+
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-08-03-i18n"/);
+  assert.match(openWorks, /title,title_en,summary,summary_en,slug/);
+  assert.match(await readProjectFile('src/styles.css'), /\.open-work-nav \.language-switcher\s*\{[^}]*height:\s*2\.5rem;/s);
+  assert.equal(
+    getLocalizedValue({ summary: '한국어 설명', summary_en: 'English description' }, 'summary', 'en'),
+    'English description'
+  );
+});
+
 test("favicon uses a large transparent PNG", async () => {
   const html = await readProjectFile("index.html");
 
@@ -462,7 +476,7 @@ test("home page exposes the swapped Sebastian-style feed and info layout", async
   assert.match(js, /fetchCsv\("\/data\/works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/open-works\.csv"\)/);
   assert.match(js, /fetchCsv\("\/data\/work-media\.csv"\)/);
-  assert.match(js, /const DATA_CACHE_VERSION = "2026-07-17-works-order"/);
+  assert.match(js, /const DATA_CACHE_VERSION = "2026-08-03-i18n"/);
   assert.match(js, /url\.searchParams\.set\("v", DATA_CACHE_VERSION\)/);
   assert.match(js, /parseCsv/);
   assert.match(js, /getYouTubeEmbedUrl/);

@@ -1530,9 +1530,10 @@ body[data-page="bead-curtain"] {
 
 .open-work-nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .open-work-nav a,
@@ -1550,9 +1551,25 @@ body[data-page="bead-curtain"] {
 }
 
 .open-work-nav a {
-  padding: 0.44rem 0.72rem 0.5rem;
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  padding: 0.4rem 0.68rem;
   font-size: 1.24rem;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.open-work-nav .language-switcher {
+  box-sizing: border-box;
+  height: 2.5rem;
+  margin-left: 0.08rem;
+  padding: 0.1rem;
+}
+
+.open-work-nav .language-switcher button {
+  min-height: 0;
+  height: 100%;
 }
 
 .open-work-detail {
