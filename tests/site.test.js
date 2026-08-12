@@ -1084,7 +1084,7 @@ test("editable CSV data drives home works and open works", async () => {
 
   assert.match(openWorkLinks, /^\uFEFF?slug,label,url,sort/m);
   assert.match(openWorkLinks, /sleepless,Github 페이지 연결,https:\/\/github\.com\/kyutomatte\/sleepless\/,1/);
-  assert.match(openWorkLinks, /sleepless,MAC OS용 다운로드,\/assets\/downloads\/sleepless\/Sleepless_0\.1\.3_aarch64\.dmg,2/);
+  assert.match(openWorkLinks, /sleepless,MAC OS용 다운로드,\/assets\/downloads\/sleepless\/Sleepless_0\.1\.4_aarch64\.dmg,2/);
   assert.match(openWorkLinks, /splatify,Web App\(beta\) 이용하기,\/splatify-webapp,1/);
   assert.match(openWorkLinks, /jeju-wave-radio,Web App 이용하기,\/jeju-wave-radio-webapp,1/);
   assert.match(openWorkLinks, /ffmochi,GitHub 페이지 연결,https:\/\/github\.com\/kyutomatte\/ffMOCHI,1/);
@@ -1491,7 +1491,7 @@ test("local assets needed for the first viewport are present", () => {
     ...vfx2026ShowreelFiles.map((file) => `public/assets/works/vfx-2026-showreel/${file}`),
     ...vfx2026VideoOnlyFiles.map((file) => `public/assets/works/${file}`),
     "public/assets/open-works/splatify/splatify-demo.mov",
-    "public/assets/downloads/sleepless/Sleepless_0.1.3_aarch64.dmg",
+    "public/assets/downloads/sleepless/Sleepless_0.1.4_aarch64.dmg",
     "public/assets/downloads/ffmochi/ffMOCHI-local.dmg",
     "public/assets/CargoMonumentGroteskPlusVariable.woff2",
     "public/assets/CargoArizonaPlusVariable.woff2",
